@@ -83,12 +83,14 @@ const createBird = (element) => ({
 const salvador = createBird(dove);
 
 const currentStop = () => {
+  // El final (pie) solo existe después de enviar la confirmación.
+  const stops = confirmed ? DOVE_STOPS : DOVE_STOPS.filter((stop) => stop.section !== "pie");
   const limit = window.innerHeight * 0.55;
   const atBottom =
     window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
-  if (atBottom) return DOVE_STOPS[DOVE_STOPS.length - 1];
-  let current = DOVE_STOPS[0];
-  DOVE_STOPS.forEach((stop) => {
+  if (atBottom) return stops[stops.length - 1];
+  let current = stops[0];
+  stops.forEach((stop) => {
     if (document.getElementById(stop.section).getBoundingClientRect().top <= limit) current = stop;
   });
   return current;
@@ -297,34 +299,33 @@ const deliver = (bird, block, { faceRight, scale, then }) => {
   wakeDove();
 };
 
-// Después de confirmar, en una fila debajo de Salvador (que está debajo de "Gracias por
-// acompañarnos"): los padrinos afuera y los papás adentro, todos mirando hacia el centro.
+// Después de confirmar, en la fila de abajo junto a Salvador (que está en el centro):
+// los papás a su lado y los padrinos afuera, todos mirando hacia él.
 const familySpots = () => {
   const width = dove.offsetWidth;
-  const thanksLine = document.querySelector(".pie-gracias").getBoundingClientRect();
-  const salvadorSpot = document.getElementById("paloma-pie").getBoundingClientRect();
-  const parentWidth = width * FAMILY_SIZE.parents;
-  const godWidth = width * FAMILY_SIZE.godparents;
-  const gap = 12;
-  const middle = 28;
-  const edge = 12;
+  const center = document.getElementById("paloma-pie").getBoundingClientRect();
+  const base = center.width / width;
+  const gap = 10;
+  const edge = 10;
   // En pantallas angostas se achican lo necesario para caber.
-  const total = 2 * (parentWidth + godWidth + gap) + middle;
-  const fit = Math.min(1, (window.innerWidth - edge * 2) / total);
-  const parentScale = FAMILY_SIZE.parents * fit;
-  const godScale = FAMILY_SIZE.godparents * fit;
-  const center = thanksLine.left + thanksLine.width / 2;
-  const y = salvadorSpot.bottom + 10 * fit;
+  const room = (window.innerWidth - center.width) / 2 - edge;
+  const need = width * base * (FAMILY_SIZE.parents + FAMILY_SIZE.godparents) + gap * 2;
+  const fit = Math.min(1, room / need);
+  const parentScale = base * FAMILY_SIZE.parents * fit;
+  const godScale = base * FAMILY_SIZE.godparents * fit;
+  const parentWidth = width * parentScale;
+  const godWidth = width * godScale;
+  const y = center.top + center.height * 0.15;
   // Los padrinos un poco más arriba que los papás, como en un arco.
-  const godY = y - godWidth * fit * 0.75 * 0.25;
-  const parentLeft = center - middle * fit / 2 - parentWidth * fit;
-  const parentRight = center + middle * fit / 2;
+  const godY = y - godWidth * 0.75 * 0.15;
+  const parentLeft = center.left - gap * fit - parentWidth;
+  const parentRight = center.right + gap * fit;
   // Los papás traen a los papás; los padrinos, a los padrinos.
   return [
     { x: parentRight, y, scale: parentScale, faceRight: false },
-    { x: parentLeft - gap * fit - godWidth * fit, y: godY, scale: godScale, faceRight: true },
+    { x: parentLeft - gap * fit - godWidth, y: godY, scale: godScale, faceRight: true },
     { x: parentLeft, y, scale: parentScale, faceRight: true },
-    { x: parentRight + parentWidth * fit + gap * fit, y: godY, scale: godScale, faceRight: false },
+    { x: parentRight + parentWidth + gap * fit, y: godY, scale: godScale, faceRight: false },
   ];
 };
 
@@ -346,11 +347,11 @@ const groupSpot = (section, index) => (section === "pie" && confirmed ? familySp
 
 const onScreen = (bird) => bird.y > -dove.offsetWidth && bird.y < window.innerHeight;
 
-// Después de enviar, primero se ve a Salvador en su lugar; luego las cuatro llegan
-// una por una desde los lados y se posan debajo de él.
+// Después de enviar, primero aparece Salvador en el centro; luego las cuatro llegan
+// una por una desde los lados y se posan a su lado.
 const gatherAtFooter = (bird, index) => {
   familyGathered = true;
-  const wait = 1300 + index * 380;
+  const wait = 2600 + index * 380;
   window.setTimeout(() => {
     if (salvador.stop?.section !== "pie" || bird.delivering) return;
     const start =
@@ -468,12 +469,22 @@ const flyDoves = (now) => {
       const wasAtFooter = salvador.stop?.section === "pie";
       salvador.stop = stop;
       document.documentElement.classList.toggle("en-el-final", stop.section === "pie");
+      dove.classList.toggle("sin-monograma", stop.section === "pie");
       if (stop.section === "pie" || wasAtFooter) {
-        // En el pie Salvador ya está fijo en su lugar: no entra ni sale volando.
+        // En el pie Salvador no entra ni sale volando: aparece en su lugar, en el centro.
         salvador.flight = null;
         salvador.target = () => stopTarget(stop);
         setWings(salvador, "posada");
         setFacing(salvador, false);
+        if (stop.section === "pie") {
+          salvador.opacity = 0;
+          window.setTimeout(() => {
+            salvador.opacity = 1;
+            wakeDove();
+          }, 1800);
+        } else {
+          salvador.opacity = 1;
+        }
       } else {
         takeOff(salvador, () => stopTarget(stop));
       }

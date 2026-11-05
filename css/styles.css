@@ -605,6 +605,7 @@ button:disabled {
 }
 
 .paloma-activa .paloma {
+  transition: opacity 0.8s ease;
   position: absolute;
   top: 0;
   left: 0;
@@ -731,6 +732,11 @@ button:disabled {
   right: calc(100% - 3px);
   transform: translateY(-50%);
   transition: transform 0.35s var(--ease);
+}
+
+/* Al final Salvador ya no lleva el monograma: está en el círculo de arriba */
+.paloma.sin-monograma .paloma-carga {
+  display: none;
 }
 
 .paloma.mirando-derecha .paloma-carga {
@@ -1152,8 +1158,6 @@ button:disabled {
 
 .pie.confirmada {
   padding-top: 40px;
-  /* Espacio para la fila de palomas debajo de "Gracias por acompañarnos" */
-  padding-bottom: 130px;
 }
 
 .rsvp-gracias-titulo {
@@ -1316,11 +1320,6 @@ button:disabled {
   padding: 56px 24px;
 }
 
-/* El monograma y la paloma de Salvador quedan centrados como pareja */
-.pie .monograma-paloma {
-  margin-right: 101px;
-}
-
 .pie-contenido {
   display: flex;
   flex-direction: column;
@@ -1330,8 +1329,28 @@ button:disabled {
   text-align: center;
 }
 
+/* El final solo aparece después de enviar la confirmación */
+.js .pie:not(.confirmada) {
+  display: none;
+}
+
+.pie.confirmada .monograma,
+.pie.confirmada .pie-gracias {
+  animation: aparece-gracias 1.2s var(--ease) 1s both;
+}
+
+.pie-palomas {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.pie-palomas img {
+  width: 104px;
+}
+
 .pie-gracias {
-  margin-bottom: 28px;
+  margin-top: 20px;
   font-family: var(--font-display);
   font-size: 22px;
   font-weight: 300;
@@ -1351,25 +1370,8 @@ button:disabled {
 /* ---------- Celulares angostos ---------- */
 
 @media (max-width: 430px) {
-  .pie .monograma {
-    width: 62px;
-    height: 62px;
-  }
-
-  .pie .monograma-letras .chica {
-    font-size: 12px;
-  }
-
-  .pie .monograma-letras .grande {
-    font-size: 26px;
-  }
-
-  .pie .monograma-paloma img {
-    width: 86px;
-  }
-
-  .pie .monograma-paloma {
-    margin-right: 83px;
+  .pie-palomas img {
+    width: 84px;
   }
 }
 
@@ -1399,8 +1401,8 @@ button:disabled {
     width: 116px;
   }
 
-  .pie .monograma-paloma {
-    margin-right: 113px;
+  .pie-palomas img {
+    width: 116px;
   }
 
   .paloma-carga {
