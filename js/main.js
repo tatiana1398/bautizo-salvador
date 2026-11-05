@@ -700,16 +700,20 @@ const showThanks = () => {
   document.getElementById("pie").classList.add("confirmada");
   form.hidden = true;
   thanks.hidden = false;
-  fitFinalScene();
-  window.addEventListener("resize", fitFinalScene);
-  // Baja al final, donde está Salvador; las otras cuatro llegan volando desde los lados.
   confirmed = true;
-  window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+  // Cierra el teclado del celular antes de acomodar el final (cambia el alto de la pantalla).
+  document.activeElement?.blur();
+  window.addEventListener("resize", fitFinalScene);
   window.setTimeout(() => {
-    if (salvador.stop?.section === "pie" && !familyGathered) {
-      family.forEach((bird, index) => regroupBird(bird, index));
-    }
-  }, 1000);
+    fitFinalScene();
+    // Baja al final, donde está Salvador; las otras cuatro llegan volando desde los lados.
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+    window.setTimeout(() => {
+      if (salvador.stop?.section === "pie" && !familyGathered) {
+        family.forEach((bird, index) => regroupBird(bird, index));
+      }
+    }, 1000);
+  }, 350);
 };
 
 nameInput.addEventListener("input", updateSubmit);

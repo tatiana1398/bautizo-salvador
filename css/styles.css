@@ -1339,6 +1339,15 @@ button:disabled {
   color: hsl(var(--ink-soft));
 }
 
+/* ---------- Celular ---------- */
+
+/* Letra de 16px en los campos: con menos, el iPhone acerca la página al escribir */
+@media (max-width: 767px) {
+  .field {
+    font-size: 16px;
+  }
+}
+
 /* ---------- Celulares angostos ---------- */
 
 @media (max-width: 430px) {
