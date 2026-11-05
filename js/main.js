@@ -204,8 +204,8 @@ const stepBird = (bird, now) => {
 
 /* ---------- Las palomas que traen el contenido ---------- */
 
-// Cada una trae un bloque marcado con data-paloma en el HTML:
-// 0 los papás, 1 los padrinos, 2 la ceremonia, 3 el brunch. Llegan por este lado de la pantalla.
+// Las dos primeras traen un bloque marcado con data-paloma en el HTML: 0 los papás, 1 los padrinos.
+// Las cuatro (papás, padrinos y las otras dos) se reúnen al final. Llegan por este lado de la pantalla.
 const COMES_FROM_LEFT = [false, true, true, false];
 const FAMILY_SIZE = { parents: 0.75, godparents: 0.62 };
 
@@ -393,10 +393,9 @@ const regroupBird = (bird, index, delay = 0) => {
   }
 };
 
-// Las entregas van por turnos: papás, padrinos y luego las dos tarjetas de los lugares.
+// Las entregas van por turnos: primero los papás y luego los padrinos.
 const deliveryQueue = [];
 const queuedBlocks = new Set();
-const PLACE_PAIR = { 2: 3, 3: 2 };
 let deliveryBusy = false;
 
 const nextDelivery = () => {
@@ -411,24 +410,6 @@ const deliveryObserver = new IntersectionObserver(
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
       deliveryObserver.unobserve(entry.target);
-      const index = Number(entry.target.dataset.paloma);
-      // En pantallas anchas las dos tarjetas están lado a lado: llegan juntas,
-      // una por la izquierda y otra por la derecha.
-      const partner = PLACE_PAIR[index];
-      if (partner !== undefined && isWide()) {
-        const other = document.querySelector(`[data-paloma="${partner}"]`);
-        if (other.classList.contains("por-entregar") && !queuedBlocks.has(other)) {
-          deliveryObserver.unobserve(other);
-          queuedBlocks.add(other);
-          queuedBlocks.add(entry.target);
-          deliveryQueue.push(() => {
-            startDelivery(entry.target);
-            startDelivery(other);
-          });
-          nextDelivery();
-          return;
-        }
-      }
       if (queuedBlocks.has(entry.target)) return;
       queuedBlocks.add(entry.target);
       deliveryQueue.push(() => startDelivery(entry.target));
