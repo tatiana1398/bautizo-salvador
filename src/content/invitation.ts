@@ -72,6 +72,8 @@ export const invitation = {
     sheetEndpoint: "",
   },
   hosts: "Tatiana y Fernando",
+  // Canción de fondo (id del video de YouTube)
+  musicVideoId: "RQuX0B0-AwQ",
 };
 
 export const calendarUrl = () => {

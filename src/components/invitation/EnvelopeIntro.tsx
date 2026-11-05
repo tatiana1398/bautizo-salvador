@@ -6,6 +6,8 @@ import { invitation } from "@/content/invitation";
 import { EASE } from "./motion";
 
 type EnvelopeIntroProps = {
+  /** Se llama en el mismo toque que abre el sobre (para poder iniciar la música). */
+  onOpenStart?: () => void;
   /** El sobre se está desvaneciendo: es el momento de animar la portada. */
   onReveal: () => void;
   /** El sobre terminó de desaparecer y se puede quitar. */
@@ -18,7 +20,7 @@ type Stage = "closed" | "opening" | "done";
  * Pantalla de entrada: un sobre cerrado con sello de lacre.
  * Al tocarlo se levanta la solapa y el sobre se desvanece dando paso a la portada.
  */
-export const EnvelopeIntro = ({ onReveal, onDone }: EnvelopeIntroProps) => {
+export const EnvelopeIntro = ({ onOpenStart, onReveal, onDone }: EnvelopeIntroProps) => {
   const reduceMotion = useReducedMotion();
   const [stage, setStage] = useState<Stage>("closed");
   // La solapa abierta debe quedar detrás de la tarjeta que sale del sobre.
@@ -42,6 +44,7 @@ export const EnvelopeIntro = ({ onReveal, onDone }: EnvelopeIntroProps) => {
 
   const open = () => {
     if (stage !== "closed") return;
+    onOpenStart?.();
     setStage("opening");
     window.setTimeout(() => setFlapBehind(true), reduceMotion ? 0 : 650);
     window.setTimeout(onReveal, reduceMotion ? 100 : 950);
