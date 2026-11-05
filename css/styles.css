@@ -704,6 +704,17 @@ button:disabled {
   }
 }
 
+/* Al final, todas siguen moviendo las alas suavemente, cada una a su ritmo */
+.en-el-final .paloma.posada .paloma-alas {
+  animation: aleteo-suave 0.75s ease-in-out var(--desfase, 0s) infinite alternate;
+}
+
+@keyframes aleteo-suave {
+  to {
+    transform: rotate(11deg) scaleY(0.55);
+  }
+}
+
 @keyframes acomodo {
   0%,
   88%,
@@ -1137,6 +1148,14 @@ button:disabled {
 
 .rsvp.confirmada .rsvp-gracias {
   margin-top: 0;
+  animation: aparece-gracias 1.2s var(--ease) 0.5s both;
+}
+
+@keyframes aparece-gracias {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
 }
 
 .pie.confirmada {

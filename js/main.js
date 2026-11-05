@@ -200,9 +200,11 @@ const stepBird = (bird, now) => {
 const COMES_FROM_LEFT = [false, true, true, false];
 const FAMILY_SIZE = { parents: 0.8, godparents: 0.62 };
 
-const family = COMES_FROM_LEFT.map(() => {
+const family = COMES_FROM_LEFT.map((_, index) => {
   const element = document.createElement("div");
   element.className = "paloma paloma-familia";
+  // Cada una aletea a su propio ritmo al final.
+  element.style.setProperty("--desfase", `${0.15 + index * 0.13}s`);
   element.setAttribute("aria-hidden", "true");
   element.hidden = true;
   element.innerHTML = dove.querySelector(".paloma-ave").outerHTML;
@@ -488,6 +490,7 @@ const flyDoves = (now) => {
     const stop = currentStop();
     if (stop !== salvador.stop) {
       salvador.stop = stop;
+      document.documentElement.classList.toggle("en-el-final", stop.section === "pie");
       takeOff(salvador, () => stopTarget(stop));
       family.forEach((bird, index) => regroupBird(bird, index, index * 130));
     }
@@ -556,6 +559,7 @@ if (document.documentElement.classList.contains("sin-sobre")) {
     // Sin sobre: aparece directamente posada en la sección del link.
     salvador.stop = currentStop();
     salvador.target = () => stopTarget(salvador.stop);
+    document.documentElement.classList.toggle("en-el-final", salvador.stop.section === "pie");
     startDove();
     family.forEach((bird, index) => regroupBird(bird, index));
     wakeDove();
@@ -684,6 +688,21 @@ const setSending = (value) => {
   updateSubmit();
 };
 
+// Después de confirmar, el mensaje y las palomas del final llenan la pantalla, centrados,
+// para que no se vea lo de arriba (como el código de vestimenta).
+const fitFinalScene = () => {
+  const section = document.getElementById("rsvp");
+  const footer = document.getElementById("pie");
+  section.style.paddingTop = "";
+  footer.style.paddingBottom = "";
+  const free = window.innerHeight - section.offsetHeight - footer.offsetHeight;
+  if (free <= 0) return;
+  const top = parseFloat(getComputedStyle(section).paddingTop);
+  const bottom = parseFloat(getComputedStyle(footer).paddingBottom);
+  section.style.paddingTop = `${top + free / 2}px`;
+  footer.style.paddingBottom = `${bottom + free / 2}px`;
+};
+
 const showThanks = () => {
   const family = getFamily();
   const guestCount = getGuestNames().length;
@@ -697,6 +716,8 @@ const showThanks = () => {
   document.getElementById("pie").classList.add("confirmada");
   form.hidden = true;
   thanks.hidden = false;
+  fitFinalScene();
+  window.addEventListener("resize", fitFinalScene);
   // Baja al final: Salvador se posa con el monograma y las otras cuatro llegan a su alrededor.
   window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
 };
