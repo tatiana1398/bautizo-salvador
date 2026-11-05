@@ -57,7 +57,7 @@ export const invitation = {
   ] satisfies PlaceDetail[],
   dressCode: {
     label: "Código de vestimenta",
-    value: "Semi formal",
+    value: "Semiformal",
     note: "",
   },
   rsvp: {
