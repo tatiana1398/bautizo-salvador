@@ -77,8 +77,8 @@
       <p class="sobre-pista"><span>Toca el sobre para abrir</span></p>
     </div>
 
-    <!-- La paloma que acompaña la lectura: sale del sobre con el monograma en el pico, se posa en la
-         portada y luego vuela a un lado de cada sección hasta dejarlo en el pie -->
+    <!-- Salvador: sale del sobre con el monograma en el pico y lo lleva siempre, de la portada al pie.
+         Las otras cuatro palomas (las crea js/main.js) traen los nombres y las tarjetas. -->
     <div id="paloma" class="paloma" aria-hidden="true">
       <div class="monograma paloma-carga">
         <span class="monograma-letras">
@@ -147,7 +147,7 @@
           <!-- Monograma con la paloma a la derecha, empujándolo con la rama de olivo -->
           <div class="portada-item" style="--orden: 0">
             <div class="monograma-paloma">
-              <div class="monograma monograma-ancla" role="img" aria-label="Monograma LSM">
+              <div id="monograma-portada" class="monograma monograma-ancla" role="img" aria-label="Monograma LSM">
                 <span class="monograma-letras" aria-hidden="true">
                   <span class="chica">L</span>
                   <span class="grande">S</span>
@@ -182,7 +182,7 @@
       <!-- Padres y padrinos -->
       <section id="familia" class="familia">
         <div class="contenedor-560">
-          <div class="aparecer centrado">
+          <div class="aparecer centrado" data-paloma="0">
             <p class="eyebrow">Padres</p>
             <div class="familia-nombres">
               <p>Tatiana Montenegro Domínguez</p>
@@ -190,7 +190,7 @@
             </div>
           </div>
           <div class="rule-fade familia-separador"></div>
-          <div class="aparecer centrado" style="--retraso: 0.08s">
+          <div class="aparecer centrado" style="--retraso: 0.08s" data-paloma="1">
             <p class="eyebrow">Padrinos</p>
             <div class="familia-nombres">
               <p>Violet Leiva Benachi</p>
@@ -220,7 +220,7 @@
       <section id="detalles" class="detalles">
         <div class="contenedor-680">
           <div class="detalles-grilla">
-            <div class="aparecer alto-completo">
+            <div class="aparecer alto-completo" data-paloma="2">
               <article class="lugar">
                 <div class="lugar-encabezado">
                   <p class="eyebrow">Ceremonia</p>
@@ -247,7 +247,7 @@
               </article>
             </div>
 
-            <div class="aparecer alto-completo" style="--retraso: 0.1s">
+            <div class="aparecer alto-completo" style="--retraso: 0.1s" data-paloma="3">
               <article class="lugar">
                 <div class="lugar-encabezado">
                   <p class="eyebrow">Brunch</p>

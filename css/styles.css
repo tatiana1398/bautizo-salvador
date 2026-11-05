@@ -631,9 +631,30 @@ button:disabled {
   z-index: 54;
 }
 
-.paloma-activa .paloma-ancla,
+.paloma-activa .paloma-ancla {
+  visibility: hidden;
+}
+
+/* Salvador lleva el monograma en el pico: los de la portada y el pie solo marcan dónde se posa */
 .paloma-activa .monograma-ancla {
   visibility: hidden;
+}
+
+/* Lo que traen las palomas: espera oculto hasta que lo dejan en su lugar */
+.por-entregar {
+  visibility: hidden;
+}
+
+/* La copia que cuelga del pico mientras vuela */
+.carga-entrega {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 56;
+  margin: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+  will-change: transform;
 }
 
 .paloma-ave {
@@ -1096,6 +1117,17 @@ button:disabled {
   margin-top: 36px;
 }
 
+/* Después de enviar queda solo el agradecimiento */
+.rsvp-tarjeta.confirmada > .eyebrow,
+.rsvp-tarjeta.confirmada > .rsvp-titulo,
+.rsvp-tarjeta.confirmada > .rsvp-mensaje {
+  display: none;
+}
+
+.rsvp-tarjeta.confirmada .rsvp-gracias {
+  margin-top: 0;
+}
+
 .rsvp-gracias-titulo {
   font-family: var(--font-display);
   font-size: 22px;
@@ -1446,6 +1478,7 @@ button:disabled {
 
   .sobre,
   .paloma,
+  .carga-entrega,
   .boton-musica,
   .rsvp-formulario,
   .rsvp-gracias {
@@ -1453,7 +1486,8 @@ button:disabled {
   }
 
   .paloma-ancla,
-  .monograma-ancla {
+  .monograma-ancla,
+  .por-entregar {
     visibility: visible !important;
   }
 

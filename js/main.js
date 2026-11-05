@@ -52,7 +52,8 @@ const DOVE_STOPS = [
   { section: "invitacion", side: "left", top: 0.34 },
   { section: "detalles", side: "right", top: 0.22 },
   { section: "vestimenta", side: "left", top: 0.38 },
-  { section: "rsvp", side: "right", top: 0.26 },
+  // En la confirmación las cinco palomas se posan alrededor de la tarjeta.
+  { section: "rsvp", group: true },
   { section: "pie", anchor: "paloma-pie" },
 ];
 
@@ -87,6 +88,7 @@ const currentStop = () => {
 
 const stopTarget = (stop) => {
   const width = dove.offsetWidth;
+  if (stop.group) return rsvpSpots()[4];
   if (stop.anchor) {
     const rect = document.getElementById(stop.anchor).getBoundingClientRect();
     return { x: rect.left, y: rect.top, scale: rect.width / width, faceRight: false };
@@ -195,6 +197,7 @@ const stepBird = (bird, now) => {
   // El cuerpo sube y baja un poco con cada aletazo.
   const bob = flapping ? Math.sin((now / 320) * Math.PI * 2) * 2.5 * bird.scale : 0;
   renderBird(bird, bob);
+  if (bird.cargo) placeCargo(bird, t, bob);
 
   if (t >= 1) {
     // Llegó: se posa y se gira hacia donde debe mirar.
@@ -206,12 +209,14 @@ const stepBird = (bird, now) => {
   return true;
 };
 
-/* La familia: al llegar al final, los papás se posan junto a Salvador
-   y los padrinos un poco más afuera, todos mirando hacia él. */
+/* ---------- Las palomas que traen el contenido ---------- */
 
+// Cada una trae un bloque marcado con data-paloma en el HTML:
+// 0 los papás, 1 los padrinos, 2 la ceremonia, 3 el brunch. Llegan por este lado de la pantalla.
+const COMES_FROM_LEFT = [false, true, true, false];
 const FAMILY_SIZE = { parents: 0.8, godparents: 0.62 };
 
-const family = Array.from({ length: 4 }, () => {
+const family = COMES_FROM_LEFT.map(() => {
   const element = document.createElement("div");
   element.className = "paloma paloma-familia";
   element.setAttribute("aria-hidden", "true");
@@ -221,11 +226,113 @@ const family = Array.from({ length: 4 }, () => {
   return createBird(element);
 });
 
-// Lugares de la familia alrededor del monograma y la paloma del pie:
-// [papá izquierda, papá derecha, padrino izquierda, padrino derecha].
+const isWide = () => window.innerWidth >= 768;
+
+// De dónde cuelga lo que trae: bajo el pico (con la rama de olivo), por debajo del cuerpo
+// para que al posarse no tape el bloque. Depende de hacia dónde mira.
+const BEAK = { x: 0.07, y: 0.88 };
+
+const beakPoint = (bird, bob = 0) => {
+  const width = dove.offsetWidth * bird.scale;
+  const facingRight = bird.el.classList.contains("mirando-derecha");
+  return {
+    x: bird.x + width * (facingRight ? 1 - BEAK.x : BEAK.x),
+    y: bird.y + bob + width * 0.75 * BEAK.y,
+  };
+};
+
+// Lo que trae cuelga del pico, pequeño; al llegar crece hasta su tamaño y queda en su lugar.
+const placeCargo = (bird, t, bob) => {
+  const { element, width, small } = bird.cargo;
+  const grow = easeInOutSine(Math.min(Math.max((t - 0.62) / 0.38, 0), 1));
+  const scale = small + (1 - small) * grow;
+  const beak = beakPoint(bird, bob);
+  element.style.transform =
+    `translate(${beak.x - (width * scale) / 2}px, ${beak.y}px) scale(${scale})`;
+};
+
+// Dónde se posa para dejar el bloque: con el pico justo en el centro de su borde de arriba.
+const deliverySpot = (block, faceRight, scale) => () => {
+  const rect = block.getBoundingClientRect();
+  const width = dove.offsetWidth * scale;
+  return {
+    x: rect.left + rect.width / 2 - width * (faceRight ? 1 - BEAK.x : BEAK.x),
+    y: rect.top - width * 0.75 * BEAK.y,
+    scale,
+    faceRight,
+  };
+};
+
+const deliver = (bird, block, { faceRight, scale, then }) => {
+  bird.delivering = true;
+  const cargo = block.cloneNode(true);
+  cargo.removeAttribute("id");
+  cargo.querySelectorAll("[id]").forEach((element) => element.removeAttribute("id"));
+  cargo.classList.remove("por-entregar", "aparecer", "visible");
+  cargo.classList.add("carga-entrega");
+  cargo.setAttribute("aria-hidden", "true");
+  const width = block.offsetWidth;
+  Object.assign(cargo.style, {
+    width: `${width}px`,
+    height: `${block.offsetHeight}px`,
+    textAlign: getComputedStyle(block).textAlign,
+  });
+  document.body.append(cargo);
+  bird.cargo = { element: cargo, width, small: Math.min(1, (dove.offsetWidth * scale * 2.3) / width) };
+
+  takeOff(bird, deliverySpot(block, faceRight, scale), {
+    faceRight,
+    duration: 1700,
+    lift: 60,
+    locked: true,
+    onLand: () => {
+      // Lo deja en su lugar y le da el turno a la siguiente.
+      block.classList.remove("por-entregar");
+      cargo.remove();
+      bird.cargo = null;
+      if (bird !== salvador) {
+        deliveryBusy = false;
+        window.setTimeout(nextDelivery, 250);
+      }
+      window.setTimeout(() => {
+        bird.delivering = false;
+        then();
+        wakeDove();
+      }, 450);
+    },
+  });
+  wakeDove();
+};
+
+// Las cinco alrededor de la tarjeta de confirmación (la 4 es Salvador, arriba en el centro).
+const rsvpSpots = () => {
+  const card = document.querySelector(".rsvp-tarjeta").getBoundingClientRect();
+  const width = dove.offsetWidth;
+  const scale = isWide() ? 0.75 : 0.55;
+  const size = width * scale;
+  const height = size * 0.75;
+  const clampX = (x, w = size) => Math.min(Math.max(x, 4), window.innerWidth - w - 4);
+  const salvadorScale = scale * 1.15;
+  const salvadorSize = width * salvadorScale;
+  return [
+    { x: clampX(card.left - size * 0.35), y: card.top - height * 0.85, scale, faceRight: true },
+    { x: clampX(card.right - size * 0.65), y: card.top - height * 0.85, scale, faceRight: false },
+    { x: clampX(card.left - size * 0.8), y: card.top + card.height * 0.42, scale, faceRight: true },
+    { x: clampX(card.right - size * 0.2), y: card.top + card.height * 0.58, scale, faceRight: false },
+    {
+      x: clampX(card.left + card.width / 2 - salvadorSize * 0.3, salvadorSize),
+      y: card.top - salvadorSize * 0.75 * 0.9,
+      scale: salvadorScale,
+      faceRight: false,
+    },
+  ];
+};
+
+// Al final, alrededor de "Gracias por acompañarnos": los papás junto a Salvador
+// y los padrinos un poco más afuera, todos mirando hacia él.
 const familySpots = () => {
   const width = dove.offsetWidth;
-  const monogram = document.querySelector("#pie .monograma-ancla").getBoundingClientRect();
+  const monogram = document.querySelector("#pie .monograma").getBoundingClientRect();
   const footerDove = document.getElementById("paloma-pie").getBoundingClientRect();
   const base = footerDove.width / width;
   const parentScale = base * FAMILY_SIZE.parents;
@@ -260,61 +367,126 @@ const familySpots = () => {
           { x: parents[1].x + parentWidth - godWidth, y: y - godHeight - 14, faceRight: false },
         ];
   godparents.forEach((spot) => (spot.scale = godScale));
-  return [...parents, ...godparents];
+  // Los papás traen a los papás; los padrinos, a los padrinos.
+  return [parents[1], godparents[0], parents[0], godparents[1]];
 };
 
-// Fuera de la pantalla, del lado de cada paloma.
+// Fuera de la pantalla, del lado por donde llega cada una.
 const offscreenSpot = (index) => {
-  const fromLeft = index % 2 === 0;
-  const width = dove.offsetWidth;
+  const fromLeft = COMES_FROM_LEFT[index];
   return {
-    x: fromLeft ? -width - 30 : window.innerWidth + 30,
-    y: window.innerHeight * (0.25 + 0.12 * index),
+    x: fromLeft ? -dove.offsetWidth - 30 : window.innerWidth + 30,
+    y: window.innerHeight * (0.2 + 0.12 * index),
     scale: 0.6,
     faceRight: !fromLeft,
   };
 };
 
-const familyArrives = (duration) => {
-  family.forEach((bird, index) => {
-    const start = bird.el.hidden ? offscreenSpot(index) : { x: bird.x, y: bird.y, scale: bird.scale };
-    bird.el.hidden = false;
-    Object.assign(bird, start, { opacity: 1 });
-    takeOff(bird, () => familySpots()[index], {
-      from: start,
-      // Llegan casi al mismo tiempo que Salvador, una tras otra.
-      delay: index * 140,
-      duration: duration + 250 + index * 60,
-      lift: 70 + index * 25,
-    });
-  });
+const groupSpot = (section, index) => {
+  if (section === "rsvp") return rsvpSpots()[index];
+  if (section === "pie") return familySpots()[index];
+  return null;
 };
 
-const familyLeaves = () => {
-  family.forEach((bird, index) => {
-    if (bird.el.hidden) return;
+const onScreen = (bird) => bird.y > -dove.offsetWidth && bird.y < window.innerHeight;
+
+// Al final, primero baja Salvador con el monograma; cuando se posa, las demás llegan
+// una por una desde los lados y se juntan a su alrededor. Mientras tanto siguen posadas
+// en la tarjeta de confirmación (se van con ella al hacer scroll, no se caen).
+const gatherAtFooter = (bird, index) => {
+  const wait = (salvador.flight?.duration ?? 0) * 0.85 + index * 280;
+  window.setTimeout(() => {
+    if (salvador.stop?.section !== "pie" || bird.delivering) return;
+    const start = !bird.el.hidden && onScreen(bird) ? null : offscreenSpot(index);
+    bird.el.hidden = false;
+    if (start) Object.assign(bird, start, { opacity: 1 });
+    takeOff(bird, () => familySpots()[index], {
+      duration: 1500 + index * 120,
+      lift: 90 + index * 20,
+    });
+    wakeDove();
+  }, wait);
+};
+
+// Las que ya entregaron se reúnen en la confirmación y al final; en las demás secciones se van.
+const regroupBird = (bird, index, delay = 0) => {
+  if (bird.delivering) return;
+  const section = salvador.stop?.section;
+  if (section === "pie") {
+    gatherAtFooter(bird, index);
+    return;
+  }
+  if (groupSpot(section, index)) {
+    if (bird.el.hidden) {
+      bird.el.hidden = false;
+      Object.assign(bird, offscreenSpot(index), { opacity: 1 });
+    }
+    takeOff(bird, () => groupSpot(section, index) ?? offscreenSpot(index), { delay });
+  } else if (!bird.el.hidden) {
     takeOff(bird, () => ({ ...offscreenSpot(index), y: -150 }), {
-      delay: index * 90,
-      duration: 1300,
+      delay,
       onLand: () => {
         bird.el.hidden = true;
         bird.target = null;
       },
     });
+  }
+};
+
+// Las entregas van por turnos: papás, padrinos, ceremonia y brunch, una después de la otra.
+const deliveryQueue = [];
+let deliveryBusy = false;
+
+const nextDelivery = () => {
+  if (deliveryBusy || deliveryQueue.length === 0) return;
+  deliveryBusy = true;
+  deliveryQueue.shift()();
+};
+
+// Cuando un bloque marcado entra en pantalla, su paloma llega volando y lo deja.
+const deliveryObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      deliveryObserver.unobserve(entry.target);
+      deliveryQueue.push(() => startDelivery(entry.target));
+      nextDelivery();
+    });
+  },
+  { threshold: 0.5, rootMargin: "0px 0px -12% 0px" },
+);
+
+const startDelivery = (block) => {
+  const index = Number(block.dataset.paloma);
+  const bird = family[index];
+  const fromLeft = COMES_FROM_LEFT[index];
+  const scale = isWide() ? 0.8 : 0.6;
+  if (bird.el.hidden) {
+    const rect = block.getBoundingClientRect();
+    bird.el.hidden = false;
+    Object.assign(bird, {
+      x: fromLeft ? -dove.offsetWidth * scale - 30 : window.innerWidth + 30,
+      y: rect.top - 160,
+      scale,
+      opacity: 1,
+    });
+  }
+  deliver(bird, block, {
+    faceRight: fromLeft,
+    scale,
+    then: () => regroupBird(bird, index),
   });
 };
 
 const flyDoves = (now) => {
   doveFrame = 0;
 
-  if (!salvador.flight?.locked) {
+  if (!salvador.flight?.locked && !salvador.delivering) {
     const stop = currentStop();
     if (stop !== salvador.stop) {
-      const leavingFooter = salvador.stop?.section === "pie";
       salvador.stop = stop;
       takeOff(salvador, () => stopTarget(stop));
-      if (stop.section === "pie") familyArrives(salvador.flight.duration);
-      else if (leavingFooter) familyLeaves();
+      family.forEach((bird, index) => regroupBird(bird, index, index * 130));
     }
   }
 
@@ -332,6 +504,12 @@ const wakeDove = () => {
 const startDove = () => {
   document.documentElement.classList.add("paloma-activa");
   setWings(salvador, "posada");
+  // Los bloques que traen las palomas esperan ocultos hasta que llegan.
+  document.querySelectorAll("[data-paloma]").forEach((block) => {
+    block.classList.remove("aparecer");
+    block.classList.add("por-entregar");
+    deliveryObserver.observe(block);
+  });
   window.addEventListener("scroll", wakeDove, { passive: true });
   window.addEventListener("resize", wakeDove);
   // La portada todavía se está acomodando (animación de entrada).
@@ -376,7 +554,7 @@ if (document.documentElement.classList.contains("sin-sobre")) {
     salvador.stop = currentStop();
     salvador.target = () => stopTarget(salvador.stop);
     startDove();
-    if (salvador.stop.section === "pie") familyArrives(0);
+    family.forEach((bird, index) => regroupBird(bird, index));
     wakeDove();
   }
 } else {
@@ -511,8 +689,25 @@ const showThanks = () => {
     attendance === "yes"
       ? `Recibimos su confirmación para ${guestCount} ${guestCount === 1 ? "persona" : "personas"}. ¡Los esperamos!`
       : "Recibimos su respuesta. Gracias por acompañarnos con el corazón.";
+  // Después de enviar, la tarjeta muestra solo el agradecimiento.
+  thanks.closest(".rsvp-tarjeta").classList.add("confirmada");
   form.hidden = true;
   thanks.hidden = false;
+
+  if (document.documentElement.classList.contains("paloma-activa")) {
+    // Salvador trae en el pico "¡Gracias, familia …!", lo deja y baja a estar con las demás.
+    thanks.classList.add("por-entregar");
+    const rect = thanks.getBoundingClientRect();
+    const fromLeft = salvador.x + (dove.offsetWidth * salvador.scale) / 2 < rect.left + rect.width / 2;
+    deliver(salvador, thanks, {
+      faceRight: fromLeft,
+      scale: isWide() ? 0.85 : 0.65,
+      then: () => {
+        salvador.stop = null;
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+      },
+    });
+  }
 };
 
 nameInput.addEventListener("input", updateSubmit);
