@@ -26,7 +26,7 @@ const Index = () => {
       {envelopeGone ? null : (
         <EnvelopeIntro onOpenStart={handleOpenStart} onReveal={handleReveal} onDone={handleDone} />
       )}
-      <MusicPlayer ref={musicRef} videoId={invitation.musicVideoId} />
+      <MusicPlayer ref={musicRef} src={invitation.music} />
       <main>
         <HeroSection play={revealed} />
         <FamilySection />

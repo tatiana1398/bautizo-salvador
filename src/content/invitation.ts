@@ -73,8 +73,8 @@ export const invitation = {
       "https://script.google.com/macros/s/AKfycbx53LnYjHdk1YR6OxiRrf-_TSOg1HCUAViwIwwU9nRgwrS_y2sn0acm9-fHl93MppKVqQ/exec",
   },
   hosts: "Tatiana y Fernando",
-  // Canción de fondo (id del video de YouTube)
-  musicVideoId: "RQuX0B0-AwQ",
+  // Canción de fondo: Hallelujah (instrumental, piano, violín y chelo)
+  music: `${import.meta.env.BASE_URL}audio/hallelujah.mp3`,
 };
 
 export const calendarUrl = () => {
