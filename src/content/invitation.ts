@@ -68,6 +68,9 @@ export const invitation = {
     phoneLabel: "+52 33 1234 5678",
     contactName: "Tatiana",
     deadline: "28 de noviembre",
+    // URL de la "Aplicación web" de Google Apps Script que guarda las respuestas
+    // en la hoja de Google (ver google-sheets/Confirmaciones.gs).
+    sheetEndpoint: "",
   },
   hosts: "Tatiana y Fernando",
 };
