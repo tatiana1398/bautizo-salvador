@@ -710,7 +710,8 @@ const showThanks = () => {
   thanks.querySelector(".rsvp-gracias-texto").textContent =
     attendance === "yes"
       ? `Recibimos su confirmación para ${guestCount} ${guestCount === 1 ? "persona" : "personas"}. ¡Los esperamos!`
-      : "Recibimos su respuesta. Gracias por acompañarnos con el corazón.";
+      : // Si no pueden asistir, el mismo mensaje que se les mostró al elegir "No podremos".
+        noMessage.textContent.trim().replace(/\s+/g, " ");
   // Después de enviar queda solo el mensaje, sin la tarjeta, justo encima de las palomas del final.
   document.getElementById("rsvp").classList.add("confirmada");
   document.getElementById("pie").classList.add("confirmada");
