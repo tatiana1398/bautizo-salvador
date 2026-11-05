@@ -114,12 +114,6 @@ button:disabled {
   outline-offset: 3px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
 /* ---------- Piezas comunes ---------- */
 
 .pagina {
@@ -592,19 +586,6 @@ button:disabled {
 
 .sobre.abriendo .sobre-sello:hover {
   transform: translate(-50%, -50%) scale(1.05);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .js .aparecer,
-  .js .portada-item {
-    transform: none;
-  }
-
-  .sobre.abriendo *,
-  .sobre.abriendo .sobre-boton {
-    transition-delay: 0s !important;
-    transition-duration: 0.2s !important;
-  }
 }
 
 /* ---------- Paloma que acompaña la lectura ---------- */
@@ -1148,6 +1129,8 @@ button:disabled {
 
 .rsvp.confirmada .rsvp-gracias {
   margin-top: 0;
+  /* En el celular los padrinos se posan más arriba: espacio para que no toquen el texto */
+  margin-bottom: 28px;
   animation: aparece-gracias 1.2s var(--ease) 0.5s both;
 }
 
@@ -1488,6 +1471,10 @@ button:disabled {
 
   .rsvp-gracias-titulo {
     font-size: 26px;
+  }
+
+  .rsvp.confirmada .rsvp-gracias {
+    margin-bottom: 0;
   }
 
   .rsvp-no {

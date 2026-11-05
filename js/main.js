@@ -5,7 +5,6 @@ const SHEET_ENDPOINT =
 
 const MAX_COMPANIONS = 10;
 
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ---------- Música de fondo con un botón flotante para pausarla o reanudarla ---------- */
 
@@ -555,15 +554,13 @@ const flap = envelope.querySelector(".sobre-solapa");
 if (document.documentElement.classList.contains("sin-sobre")) {
   envelope.remove();
   playHero();
-  if (!reduceMotion) {
-    // Sin sobre: aparece directamente posada en la sección del link.
-    salvador.stop = currentStop();
-    salvador.target = () => stopTarget(salvador.stop);
-    document.documentElement.classList.toggle("en-el-final", salvador.stop.section === "pie");
-    startDove();
-    family.forEach((bird, index) => regroupBird(bird, index));
-    wakeDove();
-  }
+  // Sin sobre: Salvador aparece directamente posado en la sección del link.
+  salvador.stop = currentStop();
+  salvador.target = () => stopTarget(salvador.stop);
+  document.documentElement.classList.toggle("en-el-final", salvador.stop.section === "pie");
+  startDove();
+  family.forEach((bird, index) => regroupBird(bird, index));
+  wakeDove();
 } else {
   window.scrollTo(0, 0);
   document.body.style.overflow = "hidden";
@@ -575,13 +572,13 @@ if (document.documentElement.classList.contains("sin-sobre")) {
       envelopeButton.disabled = true;
       envelope.classList.add("abriendo");
       const envelopeRect = envelopeButton.getBoundingClientRect();
-      if (!reduceMotion) window.setTimeout(() => doveLeavesEnvelope(envelopeRect), 350);
-      window.setTimeout(() => flap.classList.add("detras"), reduceMotion ? 0 : 650);
-      window.setTimeout(playHero, reduceMotion ? 100 : 950);
+      window.setTimeout(() => doveLeavesEnvelope(envelopeRect), 350);
+      window.setTimeout(() => flap.classList.add("detras"), 650);
+      window.setTimeout(playHero, 950);
       window.setTimeout(() => {
         document.body.style.overflow = "";
         envelope.remove();
-      }, reduceMotion ? 400 : 1900);
+      }, 1900);
     },
     { once: true },
   );
