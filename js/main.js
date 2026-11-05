@@ -205,7 +205,7 @@ const stepBird = (bird, now) => {
 // Cada una trae un bloque marcado con data-paloma en el HTML:
 // 0 los papás, 1 los padrinos, 2 la ceremonia, 3 el brunch. Llegan por este lado de la pantalla.
 const COMES_FROM_LEFT = [false, true, true, false];
-const FAMILY_SIZE = { parents: 0.8, godparents: 0.62 };
+const FAMILY_SIZE = { parents: 0.75, godparents: 0.62 };
 
 const family = COMES_FROM_LEFT.map((_, index) => {
   const element = document.createElement("div");
@@ -297,34 +297,33 @@ const deliver = (bird, block, { faceRight, scale, then }) => {
   wakeDove();
 };
 
-// Al final, alrededor de "Gracias por acompañarnos": los papás junto a Salvador
-// y los padrinos un poco más afuera, todos mirando hacia él.
+// Después de confirmar, en una fila debajo de "Gracias por acompañarnos":
+// los padrinos afuera y los papás adentro, todos mirando hacia el centro.
 const familySpots = () => {
   const width = dove.offsetWidth;
-  const monogram = document.querySelector("#pie .monograma").getBoundingClientRect();
-  const footerDove = document.getElementById("paloma-pie").getBoundingClientRect();
-  const base = footerDove.width / width;
-  const gap = 6;
-  const edge = 6;
-  // Todas en una sola fila. En pantallas angostas se achican lo necesario para caber.
-  const room = Math.min(monogram.left, window.innerWidth - footerDove.right) - edge - gap * 2;
-  const fit = Math.min(1, room / (width * base * (FAMILY_SIZE.parents + FAMILY_SIZE.godparents)));
-  const parentScale = base * FAMILY_SIZE.parents * fit;
-  const godScale = base * FAMILY_SIZE.godparents * fit;
-  const parentWidth = width * parentScale;
-  const godWidth = width * godScale;
-  // A la altura de Salvador; los padrinos apenas un poco más arriba.
-  const y = footerDove.top + footerDove.height * 0.2;
-  const godY = y - godWidth * 0.75 * 0.2;
-
-  const parentLeft = monogram.left - gap - parentWidth;
-  const parentRight = footerDove.right + gap;
+  const thanksLine = document.querySelector(".pie-gracias").getBoundingClientRect();
+  const parentWidth = width * FAMILY_SIZE.parents;
+  const godWidth = width * FAMILY_SIZE.godparents;
+  const gap = 12;
+  const middle = 28;
+  const edge = 12;
+  // En pantallas angostas se achican lo necesario para caber.
+  const total = 2 * (parentWidth + godWidth + gap) + middle;
+  const fit = Math.min(1, (window.innerWidth - edge * 2) / total);
+  const parentScale = FAMILY_SIZE.parents * fit;
+  const godScale = FAMILY_SIZE.godparents * fit;
+  const center = thanksLine.left + thanksLine.width / 2;
+  const y = thanksLine.bottom + 16 * fit;
+  // Los padrinos un poco más arriba que los papás, como en un arco.
+  const godY = y - godWidth * fit * 0.75 * 0.25;
+  const parentLeft = center - middle * fit / 2 - parentWidth * fit;
+  const parentRight = center + middle * fit / 2;
   // Los papás traen a los papás; los padrinos, a los padrinos.
   return [
     { x: parentRight, y, scale: parentScale, faceRight: false },
-    { x: parentLeft - gap - godWidth, y: godY, scale: godScale, faceRight: true },
+    { x: parentLeft - gap * fit - godWidth * fit, y: godY, scale: godScale, faceRight: true },
     { x: parentLeft, y, scale: parentScale, faceRight: true },
-    { x: parentRight + parentWidth + gap, y: godY, scale: godScale, faceRight: false },
+    { x: parentRight + parentWidth * fit + gap * fit, y: godY, scale: godScale, faceRight: false },
   ];
 };
 
@@ -339,16 +338,18 @@ const offscreenSpot = (index) => {
   };
 };
 
-// Las demás solo se reúnen al final.
-const groupSpot = (section, index) => (section === "pie" ? familySpots()[index] : null);
+// Las demás solo llegan al final, y solo después de enviar la confirmación.
+let confirmed = false;
+let familyGathered = false;
+const groupSpot = (section, index) => (section === "pie" && confirmed ? familySpots()[index] : null);
 
 const onScreen = (bird) => bird.y > -dove.offsetWidth && bird.y < window.innerHeight;
 
-// Al final, primero baja Salvador con el monograma; cuando se posa, las demás llegan
-// una por una desde los lados y se juntan a su alrededor. Mientras tanto siguen posadas
-// en la tarjeta de confirmación (se van con ella al hacer scroll, no se caen).
+// Después de enviar, las cuatro llegan una por una desde los lados y se posan
+// debajo de "Gracias por acompañarnos".
 const gatherAtFooter = (bird, index) => {
-  const wait = (salvador.flight?.duration ?? 0) * 0.85 + index * 280;
+  familyGathered = true;
+  const wait = 300 + index * 280;
   window.setTimeout(() => {
     if (salvador.stop?.section !== "pie" || bird.delivering) return;
     const start =
@@ -369,7 +370,7 @@ const gatherAtFooter = (bird, index) => {
 const regroupBird = (bird, index, delay = 0) => {
   if (bird.delivering) return;
   const section = salvador.stop?.section;
-  if (section === "pie") {
+  if (section === "pie" && confirmed) {
     gatherAtFooter(bird, index);
     return;
   }
@@ -463,9 +464,19 @@ const flyDoves = (now) => {
   if (!salvador.flight?.locked && !salvador.delivering) {
     const stop = currentStop();
     if (stop !== salvador.stop) {
+      const wasAtFooter = salvador.stop?.section === "pie";
       salvador.stop = stop;
       document.documentElement.classList.toggle("en-el-final", stop.section === "pie");
-      takeOff(salvador, () => stopTarget(stop));
+      if (stop.section === "pie" || wasAtFooter) {
+        // En el pie Salvador ya está fijo en su lugar: no entra ni sale volando.
+        salvador.flight = null;
+        salvador.target = () => stopTarget(stop);
+        setWings(salvador, "posada");
+        setFacing(salvador, false);
+      } else {
+        takeOff(salvador, () => stopTarget(stop));
+      }
+      if (stop.section !== "pie") familyGathered = false;
       family.forEach((bird, index) => regroupBird(bird, index, index * 130));
     }
   }
@@ -676,9 +687,9 @@ const fitFinalScene = () => {
 };
 
 const showThanks = () => {
-  const family = getFamily();
+  const familyName = getFamily();
   const guestCount = getGuestNames().length;
-  thanks.querySelector(".rsvp-gracias-titulo").textContent = `¡Familia ${family}!`;
+  thanks.querySelector(".rsvp-gracias-titulo").textContent = `¡Familia ${familyName}!`;
   thanks.querySelector(".rsvp-gracias-texto").textContent =
     attendance === "yes"
       ? `Recibimos su confirmación para ${guestCount} ${guestCount === 1 ? "persona" : "personas"}. ¡Los esperamos!`
@@ -691,8 +702,14 @@ const showThanks = () => {
   thanks.hidden = false;
   fitFinalScene();
   window.addEventListener("resize", fitFinalScene);
-  // Baja al final: Salvador se posa con el monograma y las otras cuatro llegan a su alrededor.
+  // Baja al final, donde está Salvador; las otras cuatro llegan volando desde los lados.
+  confirmed = true;
   window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+  window.setTimeout(() => {
+    if (salvador.stop?.section === "pie" && !familyGathered) {
+      family.forEach((bird, index) => regroupBird(bird, index));
+    }
+  }, 1000);
 };
 
 nameInput.addEventListener("input", updateSubmit);

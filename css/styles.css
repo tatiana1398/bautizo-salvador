@@ -1152,6 +1152,8 @@ button:disabled {
 
 .pie.confirmada {
   padding-top: 40px;
+  /* Espacio para la fila de palomas debajo de "Gracias por acompañarnos" */
+  padding-bottom: 130px;
 }
 
 .rsvp-gracias-titulo {
