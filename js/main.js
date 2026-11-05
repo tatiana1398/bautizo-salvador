@@ -44,15 +44,15 @@ const playHero = () => {
 /* ---------- Paloma que acompaña la lectura ---------- */
 
 // Dónde está Salvador en cada sección. "anchor" es la paloma fija de la portada o del pie.
-// Mientras se leen las demás secciones se va ("away") y deja que las otras traigan el contenido;
-// vuelve sola en la confirmación y al final se reúne con todas.
+// Mientras se leen las demás secciones (y se llena la confirmación) se va ("away");
+// vuelve al final y se reúne con todas.
 const DOVE_STOPS = [
   { section: "inicio", anchor: "paloma-portada" },
   { section: "familia", away: true },
   { section: "invitacion", away: true },
   { section: "detalles", away: true },
   { section: "vestimenta", away: true },
-  { section: "rsvp", group: true },
+  { section: "rsvp", away: true },
   { section: "pie", anchor: "paloma-pie" },
 ];
 
@@ -96,7 +96,6 @@ const currentStop = () => {
 
 const stopTarget = (stop) => {
   const width = dove.offsetWidth;
-  if (stop.group) return rsvpSpots()[4];
   // Fuera de la pantalla, arriba a la derecha.
   if (stop.away) return { x: window.innerWidth + 40, y: -width, scale: 0.8, faceRight: true };
   const rect = document.getElementById(stop.anchor).getBoundingClientRect();
@@ -298,30 +297,6 @@ const deliver = (bird, block, { faceRight, scale, then }) => {
   wakeDove();
 };
 
-// Alrededor de la tarjeta de confirmación (la 4 es Salvador, arriba en el centro).
-const rsvpSpots = () => {
-  const card = document.querySelector(".rsvp-tarjeta").getBoundingClientRect();
-  const width = dove.offsetWidth;
-  const scale = isWide() ? 0.75 : 0.55;
-  const size = width * scale;
-  const height = size * 0.75;
-  const clampX = (x, w = size) => Math.min(Math.max(x, 4), window.innerWidth - w - 4);
-  const salvadorScale = scale * 1.15;
-  const salvadorSize = width * salvadorScale;
-  return [
-    { x: clampX(card.left - size * 0.35), y: card.top - height * 0.85, scale, faceRight: true },
-    { x: clampX(card.right - size * 0.65), y: card.top - height * 0.85, scale, faceRight: false },
-    { x: clampX(card.left - size * 0.8), y: card.top + card.height * 0.42, scale, faceRight: true },
-    { x: clampX(card.right - size * 0.2), y: card.top + card.height * 0.58, scale, faceRight: false },
-    {
-      x: clampX(card.left + card.width / 2 - salvadorSize * 0.3, salvadorSize),
-      y: card.top - salvadorSize * 0.75 * 0.9,
-      scale: salvadorScale,
-      faceRight: false,
-    },
-  ];
-};
-
 // Al final, alrededor de "Gracias por acompañarnos": los papás junto a Salvador
 // y los padrinos un poco más afuera, todos mirando hacia él.
 const familySpots = () => {
@@ -364,7 +339,7 @@ const offscreenSpot = (index) => {
   };
 };
 
-// Las demás solo se reúnen al final; en la confirmación está Salvador solo.
+// Las demás solo se reúnen al final.
 const groupSpot = (section, index) => (section === "pie" ? familySpots()[index] : null);
 
 const onScreen = (bird) => bird.y > -dove.offsetWidth && bird.y < window.innerHeight;
