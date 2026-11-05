@@ -1,7 +1,6 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 
 import { invitation } from "@/content/invitation";
-import { nameVersion } from "@/content/version";
 
 import { BotanicalSprig, DoveMonogram } from "./Ornaments";
 import { EASE } from "./motion";
@@ -51,26 +50,15 @@ export const HeroSection = ({ play = true }: HeroSectionProps) => {
           {event.label}
         </motion.p>
 
-        {nameVersion === "texto" ? (
-          <>
-            <motion.h1
-              variants={item}
-              className="mt-5 font-display text-[64px] font-light leading-none tracking-[0.01em] text-navy md:text-[80px]"
-            >
-              {baby.name}
-            </motion.h1>
-          </>
-        ) : (
-          <motion.img
-            variants={item}
-            src={baby.nameArt}
-            alt={baby.name}
-            width={922}
-            height={315}
-            className="mt-3 w-[min(72vw,380px)] max-w-full md:w-[350px]"
-            loading="eager"
-          />
-        )}
+        <motion.img
+          variants={item}
+          src={baby.nameArt}
+          alt={baby.name}
+          width={922}
+          height={315}
+          className="mt-3 w-[min(72vw,380px)] max-w-full md:w-[350px]"
+          loading="eager"
+        />
 
         <motion.div variants={item} className="mt-4 flex items-center justify-center gap-4">
           <span className="h-px w-10 bg-line" />

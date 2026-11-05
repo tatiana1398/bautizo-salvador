@@ -18,7 +18,6 @@ export const invitation = {
     fullName: "Salvador Leiva Montenegro",
     monogram: { left: "L", center: "S", right: "M" },
     nameArt: `${import.meta.env.BASE_URL}images/salvador-nombre-sin-paloma.png`,
-    doveArt: `${import.meta.env.BASE_URL}images/paloma.png`,
     doveSealArt: `${import.meta.env.BASE_URL}images/paloma-sello.png`,
   },
   event: {

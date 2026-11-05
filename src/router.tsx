@@ -1,5 +1,4 @@
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
 
 export const routers = [
   {
@@ -7,16 +6,12 @@ export const routers = [
     name: "home",
     element: <Index />,
   },
-  {
-    path: "/version-2",
-    name: "home-version-2",
-    element: <Index />,
-  },
   /* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */
   {
     path: "*",
     name: "404",
-    element: <NotFound />,
+    // Cualquier otra ruta (por ejemplo, el archivo .html suelto) muestra la invitación.
+    element: <Index />,
   },
 ];
 

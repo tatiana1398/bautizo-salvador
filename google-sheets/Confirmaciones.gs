@@ -12,7 +12,7 @@
  */
 
 const SHEET_NAME = "Confirmaciones";
-const HEADERS = ["Fecha", "Familia", "Asiste", "Número de personas", "Nombres", "Versión"];
+const HEADERS = ["Fecha", "Familia", "Asiste", "Número de personas", "Nombres"];
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -32,7 +32,6 @@ function doPost(e) {
       clean(p.asiste),
       Number(p.personas) || 0,
       clean(p.nombres),
-      clean(p.version),
     ]);
 
     return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(

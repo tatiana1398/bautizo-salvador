@@ -3,7 +3,6 @@ import { useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { invitation } from "@/content/invitation";
-import { nameVersion } from "@/content/version";
 import { cn } from "@/lib/utils";
 
 import Reveal from "./Reveal";
@@ -47,7 +46,6 @@ export const RsvpSection = () => {
           asiste: attendance === "yes" ? "Sí" : "No",
           personas: attendance === "yes" ? String(guestNames.length) : "0",
           nombres: attendance === "yes" ? guestNames.join(", ") : "",
-          version: nameVersion === "texto" ? "2" : "1",
         }),
       });
       setStatus("sent");
