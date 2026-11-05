@@ -34,7 +34,7 @@ export const invitation = {
   welcome: {
     eyebrow: "Con alegría",
     title: "Tenemos el gusto de invitarte a celebrar el bautizo de Salvador.",
-    note: "Acompáñanos a celebrar el día en que Salvador recibe la bendición de Dios y comienza su camino en la fe, rodeado del amor de su familia.",
+    note: "Nuestro hijo recibe la bendición de Dios y comienza su camino en la fe, rodeado del amor de su familia.",
   },
   places: [
     {
