@@ -1117,27 +1117,43 @@ button:disabled {
   margin-top: 36px;
 }
 
-/* Después de enviar queda solo el agradecimiento */
-.rsvp-tarjeta.confirmada > .eyebrow,
-.rsvp-tarjeta.confirmada > .rsvp-titulo,
-.rsvp-tarjeta.confirmada > .rsvp-mensaje {
+/* Después de enviar queda solo el agradecimiento, sin la tarjeta,
+   justo encima de las palomas del final */
+.rsvp.confirmada {
+  padding-bottom: 0;
+}
+
+.rsvp.confirmada .rsvp-tarjeta {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.rsvp.confirmada .rsvp-tarjeta > .eyebrow,
+.rsvp.confirmada .rsvp-titulo,
+.rsvp.confirmada .rsvp-mensaje {
   display: none;
 }
 
-.rsvp-tarjeta.confirmada .rsvp-gracias {
+.rsvp.confirmada .rsvp-gracias {
   margin-top: 0;
+}
+
+.pie.confirmada {
+  padding-top: 40px;
 }
 
 .rsvp-gracias-titulo {
   font-family: var(--font-display);
   font-size: 22px;
-  font-weight: 300;
+  font-weight: 600;
   line-height: 1.375;
   color: hsl(var(--ink));
 }
 
 .rsvp-gracias-texto {
   margin-top: 12px;
+  font-weight: 500;
   font-size: 13px;
   line-height: 1.625;
   color: hsl(var(--ink-soft));
@@ -1287,6 +1303,11 @@ button:disabled {
   padding: 56px 24px;
 }
 
+/* El monograma y la paloma de Salvador quedan centrados como pareja */
+.pie .monograma-paloma {
+  margin-right: 101px;
+}
+
 .pie-contenido {
   display: flex;
   flex-direction: column;
@@ -1329,6 +1350,10 @@ button:disabled {
   .monograma-paloma img,
   .paloma-activa .paloma {
     width: 116px;
+  }
+
+  .pie .monograma-paloma {
+    margin-right: 113px;
   }
 
   .paloma-carga {

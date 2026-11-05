@@ -687,30 +687,18 @@ const setSending = (value) => {
 const showThanks = () => {
   const family = getFamily();
   const guestCount = getGuestNames().length;
-  thanks.querySelector(".rsvp-gracias-titulo").textContent = `¡Gracias, familia ${family}!`;
+  thanks.querySelector(".rsvp-gracias-titulo").textContent = `¡Familia ${family}!`;
   thanks.querySelector(".rsvp-gracias-texto").textContent =
     attendance === "yes"
       ? `Recibimos su confirmación para ${guestCount} ${guestCount === 1 ? "persona" : "personas"}. ¡Los esperamos!`
       : "Recibimos su respuesta. Gracias por acompañarnos con el corazón.";
-  // Después de enviar, la tarjeta muestra solo el agradecimiento.
-  thanks.closest(".rsvp-tarjeta").classList.add("confirmada");
+  // Después de enviar queda solo el mensaje, sin la tarjeta, justo encima de las palomas del final.
+  document.getElementById("rsvp").classList.add("confirmada");
+  document.getElementById("pie").classList.add("confirmada");
   form.hidden = true;
   thanks.hidden = false;
-
-  if (document.documentElement.classList.contains("paloma-activa")) {
-    // Salvador trae en el pico "¡Gracias, familia …!", lo deja y baja a estar con las demás.
-    thanks.classList.add("por-entregar");
-    const rect = thanks.getBoundingClientRect();
-    const fromLeft = salvador.x + (dove.offsetWidth * salvador.scale) / 2 < rect.left + rect.width / 2;
-    deliver(salvador, thanks, {
-      faceRight: fromLeft,
-      scale: isWide() ? 0.85 : 0.65,
-      then: () => {
-        salvador.stop = null;
-        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
-      },
-    });
-  }
+  // Baja al final: Salvador se posa con el monograma y las otras cuatro llegan a su alrededor.
+  window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
 };
 
 nameInput.addEventListener("input", updateSubmit);
