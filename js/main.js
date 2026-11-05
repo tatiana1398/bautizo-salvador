@@ -44,15 +44,15 @@ const playHero = () => {
 
 /* ---------- Paloma que acompaña la lectura ---------- */
 
-// Dónde se posa la paloma en cada sección. "ancla" es la paloma fija de la portada o del pie;
-// en las demás se queda a un lado (izquierda o derecha) mientras se lee.
+// Dónde está Salvador en cada sección. "anchor" es la paloma fija de la portada o del pie.
+// Mientras se leen las demás secciones se va ("away") y deja que las otras traigan el contenido;
+// vuelve sola en la confirmación y al final se reúne con todas.
 const DOVE_STOPS = [
   { section: "inicio", anchor: "paloma-portada" },
-  { section: "familia", side: "right", top: 0.3 },
-  { section: "invitacion", side: "left", top: 0.34 },
-  { section: "detalles", side: "right", top: 0.22 },
-  { section: "vestimenta", side: "left", top: 0.38 },
-  // En la confirmación las cinco palomas se posan alrededor de la tarjeta.
+  { section: "familia", away: true },
+  { section: "invitacion", away: true },
+  { section: "detalles", away: true },
+  { section: "vestimenta", away: true },
   { section: "rsvp", group: true },
   { section: "pie", anchor: "paloma-pie" },
 ];
@@ -89,26 +89,10 @@ const currentStop = () => {
 const stopTarget = (stop) => {
   const width = dove.offsetWidth;
   if (stop.group) return rsvpSpots()[4];
-  if (stop.anchor) {
-    const rect = document.getElementById(stop.anchor).getBoundingClientRect();
-    return { x: rect.left, y: rect.top, scale: rect.width / width, faceRight: false };
-  }
-  // En pantallas anchas se posa al lado del texto; en el celular, más pequeña y pegada al borde.
-  // El monograma del pico queda siempre del lado del texto.
-  const wide = window.innerWidth >= 1300;
-  const scale = wide ? 1.3 : window.innerWidth >= 768 ? 0.85 : 0.7;
-  const size = width * scale;
-  const monogram = dove.querySelector(".paloma-carga").offsetWidth * scale;
-  const x =
-    stop.side === "left"
-      ? wide
-        ? window.innerWidth / 2 - 380 - size - monogram
-        : 6
-      : wide
-        ? window.innerWidth / 2 + 380 + monogram
-        : window.innerWidth - 6 - size;
-  // Mira hacia el texto.
-  return { x, y: window.innerHeight * stop.top, scale, faceRight: stop.side === "left" };
+  // Fuera de la pantalla, arriba a la derecha.
+  if (stop.away) return { x: window.innerWidth + 40, y: -width, scale: 0.8, faceRight: true };
+  const rect = document.getElementById(stop.anchor).getBoundingClientRect();
+  return { x: rect.left, y: rect.top, scale: rect.width / width, faceRight: false };
 };
 
 const setFacing = (bird, faceRight) => bird.el.classList.toggle("mirando-derecha", faceRight);
@@ -304,7 +288,7 @@ const deliver = (bird, block, { faceRight, scale, then }) => {
   wakeDove();
 };
 
-// Las cinco alrededor de la tarjeta de confirmación (la 4 es Salvador, arriba en el centro).
+// Alrededor de la tarjeta de confirmación (la 4 es Salvador, arriba en el centro).
 const rsvpSpots = () => {
   const card = document.querySelector(".rsvp-tarjeta").getBoundingClientRect();
   const width = dove.offsetWidth;
@@ -382,11 +366,8 @@ const offscreenSpot = (index) => {
   };
 };
 
-const groupSpot = (section, index) => {
-  if (section === "rsvp") return rsvpSpots()[index];
-  if (section === "pie") return familySpots()[index];
-  return null;
-};
+// Las demás solo se reúnen al final; en la confirmación está Salvador solo.
+const groupSpot = (section, index) => (section === "pie" ? familySpots()[index] : null);
 
 const onScreen = (bird) => bird.y > -dove.offsetWidth && bird.y < window.innerHeight;
 
@@ -408,7 +389,7 @@ const gatherAtFooter = (bird, index) => {
   }, wait);
 };
 
-// Las que ya entregaron se reúnen en la confirmación y al final; en las demás secciones se van.
+// Las que ya entregaron se reúnen al final; en las demás secciones se van.
 const regroupBird = (bird, index, delay = 0) => {
   if (bird.delivering) return;
   const section = salvador.stop?.section;
@@ -433,8 +414,10 @@ const regroupBird = (bird, index, delay = 0) => {
   }
 };
 
-// Las entregas van por turnos: papás, padrinos, ceremonia y brunch, una después de la otra.
+// Las entregas van por turnos: papás, padrinos y luego las dos tarjetas de los lugares.
 const deliveryQueue = [];
+const queuedBlocks = new Set();
+const PLACE_PAIR = { 2: 3, 3: 2 };
 let deliveryBusy = false;
 
 const nextDelivery = () => {
@@ -449,6 +432,26 @@ const deliveryObserver = new IntersectionObserver(
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
       deliveryObserver.unobserve(entry.target);
+      const index = Number(entry.target.dataset.paloma);
+      // En pantallas anchas las dos tarjetas están lado a lado: llegan juntas,
+      // una por la izquierda y otra por la derecha.
+      const partner = PLACE_PAIR[index];
+      if (partner !== undefined && isWide()) {
+        const other = document.querySelector(`[data-paloma="${partner}"]`);
+        if (other.classList.contains("por-entregar") && !queuedBlocks.has(other)) {
+          deliveryObserver.unobserve(other);
+          queuedBlocks.add(other);
+          queuedBlocks.add(entry.target);
+          deliveryQueue.push(() => {
+            startDelivery(entry.target);
+            startDelivery(other);
+          });
+          nextDelivery();
+          return;
+        }
+      }
+      if (queuedBlocks.has(entry.target)) return;
+      queuedBlocks.add(entry.target);
       deliveryQueue.push(() => startDelivery(entry.target));
       nextDelivery();
     });

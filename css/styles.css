@@ -1285,7 +1285,6 @@ button:disabled {
 
 .pie {
   padding: 56px 24px;
-  border-top: 1px solid hsl(var(--line));
 }
 
 .pie-contenido {
