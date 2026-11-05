@@ -69,7 +69,8 @@ export const invitation = {
     deadline: "28 de noviembre",
     // URL de la "Aplicación web" de Google Apps Script que guarda las respuestas
     // en la hoja de Google (ver google-sheets/Confirmaciones.gs).
-    sheetEndpoint: "",
+    sheetEndpoint:
+      "https://script.google.com/macros/s/AKfycbx53LnYjHdk1YR6OxiRrf-_TSOg1HCUAViwIwwU9nRgwrS_y2sn0acm9-fHl93MppKVqQ/exec",
   },
   hosts: "Tatiana y Fernando",
   // Canción de fondo (id del video de YouTube)
