@@ -213,7 +213,7 @@ export const RsvpSection = () => {
                   ) : (
                     <Send strokeWidth={1.5} />
                   )}
-                  {status === "sending" ? "Enviando…" : "Enviar confirmación"}
+                  {status === "sending" ? "Enviando…" : "Enviar"}
                 </Button>
                 {status === "error" ? (
                   <p className="mt-3 text-[12px] text-destructive" role="alert">
