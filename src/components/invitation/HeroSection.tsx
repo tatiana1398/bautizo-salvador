@@ -6,7 +6,12 @@ import { nameVersion } from "@/content/version";
 import { BotanicalSprig, DoveMonogram } from "./Ornaments";
 import { EASE } from "./motion";
 
-export const HeroSection = () => {
+type HeroSectionProps = {
+  /** Arranca la animación de entrada (al abrir el sobre). */
+  play?: boolean;
+};
+
+export const HeroSection = ({ play = true }: HeroSectionProps) => {
   const reduceMotion = useReducedMotion();
   const { baby, event } = invitation;
 
@@ -35,7 +40,7 @@ export const HeroSection = () => {
       <motion.div
         variants={container}
         initial="hidden"
-        animate="visible"
+        animate={play ? "visible" : "hidden"}
         className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-20 text-center md:py-24"
       >
         <motion.div variants={item}>
@@ -50,7 +55,7 @@ export const HeroSection = () => {
           <>
             <motion.h1
               variants={item}
-              className="mt-5 font-display text-[64px] font-light leading-none tracking-[0.01em] text-[#58382a] md:text-[80px]"
+              className="mt-5 font-display text-[64px] font-light leading-none tracking-[0.01em] text-navy md:text-[80px]"
             >
               {baby.name}
             </motion.h1>

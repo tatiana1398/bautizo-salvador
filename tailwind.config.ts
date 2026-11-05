@@ -58,6 +58,8 @@ export default {
 				line: 'hsl(var(--line))',
 				paper: 'hsl(var(--paper))',
 				'paper-deep': 'hsl(var(--paper-deep))',
+				navy: 'hsl(var(--navy))',
+				sky: 'hsl(var(--sky))',
 				moss: {
 					DEFAULT: 'hsl(var(--moss))',
 					deep: 'hsl(var(--moss-deep))'
