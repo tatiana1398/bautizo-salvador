@@ -1,29 +1,21 @@
-import { defineConfig, PluginOption } from "vite";
-import { enterDevPlugin, enterProdPlugin } from 'vite-plugin-enter-dev';
+import react from "@vitejs/plugin-react";
 import path from "path";
+import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  const plugins = [
-    ...enterProdPlugin(),
-  ];
-  if (mode === 'development') {
-    plugins.push(...enterDevPlugin());
-  }
-  return {
-    server: {
-      host: "::",
-      port: 8080,
+export default defineConfig({
+  server: {
+    host: "::",
+    port: 8080,
+  },
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
-    plugins: plugins.filter(Boolean) as PluginOption[],
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "./src"),
-      },
-    },
-    base: process.env.BASE_PATH ?? '/',
-    build: {
-      outDir: 'dist',
-    }
-  };
+  },
+  base: process.env.BASE_PATH ?? "/",
+  build: {
+    outDir: "dist",
+  },
 });

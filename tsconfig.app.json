@@ -27,5 +27,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "i18n.config.json"]
+  "include": ["src"]
 }
