@@ -1,0 +1,231 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Paper & ink */
+    --background: 42 36% 96%;
+    --foreground: 30 12% 12%;
+
+    --card: 42 42% 98%;
+    --card-foreground: 30 12% 12%;
+
+    --popover: 42 42% 98%;
+    --popover-foreground: 30 12% 12%;
+
+    /* Moss */
+    --primary: 132 14% 31%;
+    --primary-foreground: 42 40% 97%;
+
+    --secondary: 38 24% 91%;
+    --secondary-foreground: 30 12% 16%;
+
+    --muted: 38 22% 92%;
+    --muted-foreground: 35 8% 40%;
+
+    --accent: 132 14% 90%;
+    --accent-foreground: 30 12% 14%;
+
+    --destructive: 0 45% 45%;
+    --destructive-foreground: 42 40% 97%;
+
+    --border: 35 14% 84%;
+    --input: 35 14% 84%;
+    --ring: 132 14% 31%;
+
+    --radius: 0.125rem;
+
+    /* Semantic extras */
+    --ink: 30 12% 12%;
+    --ink-soft: 35 8% 40%;
+    --line: 35 14% 84%;
+    --paper: 42 36% 96%;
+    --paper-deep: 38 26% 92%;
+    --moss: 132 14% 31%;
+    --moss-deep: 134 17% 23%;
+    --sage: 126 12% 63%;
+    --clay: 22 32% 64%;
+
+    /* Surfaces & effects */
+    --gradient-wash: radial-gradient(
+      ellipse at 50% -10%,
+      hsl(var(--sage) / 0.22),
+      hsl(var(--paper) / 0) 62%
+    );
+    --gradient-veil: linear-gradient(
+      180deg,
+      hsl(var(--paper) / 0) 0%,
+      hsl(var(--paper) / 0.85) 55%,
+      hsl(var(--paper)) 100%
+    );
+    --shadow-soft: 0 30px 70px -48px hsl(var(--ink) / 0.45);
+    --shadow-lift: 0 18px 40px -34px hsl(var(--ink) / 0.5);
+    --transition-soft: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+
+    --sidebar-background: 42 36% 96%;
+    --sidebar-foreground: 30 12% 12%;
+    --sidebar-primary: 132 14% 31%;
+    --sidebar-primary-foreground: 42 40% 97%;
+    --sidebar-accent: 38 24% 91%;
+    --sidebar-accent-foreground: 30 12% 14%;
+    --sidebar-border: 35 14% 84%;
+    --sidebar-ring: 132 14% 31%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: hsl(var(--moss) / 0.16);
+    color: hsl(var(--ink));
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--moss));
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  }
+
+  .eyebrow {
+    @apply text-[10px] font-medium uppercase leading-none md:text-[11px];
+    letter-spacing: 0.28em;
+    color: hsl(var(--moss));
+  }
+
+  .eyebrow-muted {
+    @apply text-[10px] uppercase leading-none md:text-[11px];
+    letter-spacing: 0.22em;
+    color: hsl(var(--ink-soft));
+  }
+
+  .rule {
+    @apply h-px w-full;
+    background: hsl(var(--line));
+  }
+
+  .rule-fade {
+    @apply h-px;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--line) / 0) 0%,
+      hsl(var(--line)) 50%,
+      hsl(var(--line) / 0) 100%
+    );
+  }
+
+  .paper-surface {
+    background-image: var(--gradient-wash);
+  }
+
+  .field {
+    @apply w-full rounded-none border-0 border-b bg-transparent px-0 pb-2.5 pt-1 text-[14px] text-ink focus:outline-none focus-visible:outline-none;
+    appearance: none;
+    border-color: hsl(var(--line));
+    transition: border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .field::placeholder {
+    color: hsl(var(--ink-soft) / 0.55);
+  }
+
+  .field:focus {
+    border-color: hsl(var(--moss));
+  }
+
+  select.field {
+    cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, hsl(var(--moss)) 50%),
+      linear-gradient(135deg, hsl(var(--moss)) 50%, transparent 50%);
+    background-position:
+      calc(100% - 11px) calc(50% + 1px),
+      calc(100% - 6px) calc(50% + 1px);
+    background-size:
+      5px 5px,
+      5px 5px;
+    background-repeat: no-repeat;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Al imprimir o exportar a PDF: mostrar las secciones animadas y conservar los colores */
+@media print {
+  @page {
+    margin: 8mm;
+  }
+
+  html,
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  [style*="opacity"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  article,
+  footer,
+  #rsvp {
+    break-inside: avoid;
+  }
+
+  #rsvp {
+    padding-bottom: 1.5rem;
+  }
+
+  #rsvp > div > div {
+    padding-top: 2.25rem;
+    padding-bottom: 2.25rem;
+  }
+
+  #detalles {
+    padding-bottom: 3rem;
+  }
+
+  #vestimenta {
+    padding-top: 2.5rem;
+    padding-bottom: 2rem;
+  }
+
+  footer {
+    border-top: 0;
+    padding-top: 1rem;
+    padding-bottom: 0;
+  }
+}
