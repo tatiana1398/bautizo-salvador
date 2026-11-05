@@ -57,6 +57,15 @@ const DOVE_STOPS = [
 ];
 
 const dove = document.getElementById("paloma");
+
+// Todas las palomas vuelan dentro de un "cielo" del tamaño de la pantalla que recorta lo que
+// queda afuera: así una paloma esperando fuera de la pantalla nunca ensancha la página
+// (en iPhone eso descuadraba todo).
+const sky = document.createElement("div");
+sky.className = "cielo";
+sky.setAttribute("aria-hidden", "true");
+document.body.append(sky);
+sky.append(dove);
 let doveFrame = 0;
 
 // Cada paloma guarda dónde está, a dónde va (target) y su vuelo actual.
@@ -207,7 +216,7 @@ const family = COMES_FROM_LEFT.map((_, index) => {
   element.setAttribute("aria-hidden", "true");
   element.hidden = true;
   element.innerHTML = dove.querySelector(".paloma-ave").outerHTML;
-  document.body.append(element);
+  sky.append(element);
   return createBird(element);
 });
 
@@ -262,7 +271,7 @@ const deliver = (bird, block, { faceRight, scale, then }) => {
     height: `${block.offsetHeight}px`,
     textAlign: getComputedStyle(block).textAlign,
   });
-  document.body.append(cargo);
+  sky.append(cargo);
   bird.cargo = { element: cargo, width, small: Math.min(1, (dove.offsetWidth * scale * 2.3) / width) };
 
   takeOff(bird, deliverySpot(block, faceRight, scale), {
@@ -320,40 +329,28 @@ const familySpots = () => {
   const monogram = document.querySelector("#pie .monograma").getBoundingClientRect();
   const footerDove = document.getElementById("paloma-pie").getBoundingClientRect();
   const base = footerDove.width / width;
-  const parentScale = base * FAMILY_SIZE.parents;
-  const godScale = base * FAMILY_SIZE.godparents;
+  const gap = 6;
+  const edge = 6;
+  // Todas en una sola fila. En pantallas angostas se achican lo necesario para caber.
+  const room = Math.min(monogram.left, window.innerWidth - footerDove.right) - edge - gap * 2;
+  const fit = Math.min(1, room / (width * base * (FAMILY_SIZE.parents + FAMILY_SIZE.godparents)));
+  const parentScale = base * FAMILY_SIZE.parents * fit;
+  const godScale = base * FAMILY_SIZE.godparents * fit;
   const parentWidth = width * parentScale;
   const godWidth = width * godScale;
-  const gap = 8;
-  const edge = 6;
+  // A la altura de Salvador; los padrinos apenas un poco más arriba.
   const y = footerDove.top + footerDove.height * 0.2;
+  const godY = y - godWidth * 0.75 * 0.2;
 
-  const parents = [
-    { x: monogram.left - gap - parentWidth, y, scale: parentScale, faceRight: true },
-    {
-      x: Math.min(footerDove.right + gap, window.innerWidth - edge - parentWidth),
-      y,
-      scale: parentScale,
-      faceRight: false,
-    },
-  ];
-
-  // En pantallas anchas van en fila; en el celular, los padrinos se posan más arriba.
-  const room = Math.min(parents[0].x, window.innerWidth - parents[1].x - parentWidth) - edge;
-  const godHeight = godWidth * 0.75;
-  const godparents =
-    room >= godWidth + gap
-      ? [
-          { x: parents[0].x - gap - godWidth, y: y - godHeight * 0.45, faceRight: true },
-          { x: parents[1].x + parentWidth + gap, y: y - godHeight * 0.45, faceRight: false },
-        ]
-      : [
-          { x: parents[0].x, y: y - godHeight - 14, faceRight: true },
-          { x: parents[1].x + parentWidth - godWidth, y: y - godHeight - 14, faceRight: false },
-        ];
-  godparents.forEach((spot) => (spot.scale = godScale));
+  const parentLeft = monogram.left - gap - parentWidth;
+  const parentRight = footerDove.right + gap;
   // Los papás traen a los papás; los padrinos, a los padrinos.
-  return [parents[1], godparents[0], parents[0], godparents[1]];
+  return [
+    { x: parentRight, y, scale: parentScale, faceRight: false },
+    { x: parentLeft - gap - godWidth, y: godY, scale: godScale, faceRight: true },
+    { x: parentLeft, y, scale: parentScale, faceRight: true },
+    { x: parentRight + parentWidth + gap, y: godY, scale: godScale, faceRight: false },
+  ];
 };
 
 // Fuera de la pantalla, del lado por donde llega cada una.
@@ -379,12 +376,15 @@ const gatherAtFooter = (bird, index) => {
   const wait = (salvador.flight?.duration ?? 0) * 0.85 + index * 280;
   window.setTimeout(() => {
     if (salvador.stop?.section !== "pie" || bird.delivering) return;
-    const start = !bird.el.hidden && onScreen(bird) ? null : offscreenSpot(index);
+    const start =
+      !bird.el.hidden && onScreen(bird)
+        ? null
+        : { ...offscreenSpot(index), y: familySpots()[index].y - 30 - index * 12 };
     bird.el.hidden = false;
     if (start) Object.assign(bird, start, { opacity: 1 });
     takeOff(bird, () => familySpots()[index], {
       duration: 1500 + index * 120,
-      lift: 90 + index * 20,
+      lift: 40 + index * 10,
     });
     wakeDove();
   }, wait);

@@ -595,8 +595,17 @@ button:disabled {
   display: none;
 }
 
-.paloma-activa .paloma {
+/* El cielo donde vuelan las palomas: cubre la pantalla y recorta lo que queda afuera */
+.cielo {
   position: fixed;
+  inset: 0;
+  z-index: 55;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.paloma-activa .paloma {
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 55;
@@ -628,7 +637,7 @@ button:disabled {
 
 /* La copia que cuelga del pico mientras vuela */
 .carga-entrega {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 56;
@@ -1326,6 +1335,31 @@ button:disabled {
   font-weight: 300;
   font-style: italic;
   color: hsl(var(--ink-soft));
+}
+
+/* ---------- Celulares angostos ---------- */
+
+@media (max-width: 430px) {
+  .pie .monograma {
+    width: 62px;
+    height: 62px;
+  }
+
+  .pie .monograma-letras .chica {
+    font-size: 12px;
+  }
+
+  .pie .monograma-letras .grande {
+    font-size: 26px;
+  }
+
+  .pie .monograma-paloma img {
+    width: 86px;
+  }
+
+  .pie .monograma-paloma {
+    margin-right: 83px;
+  }
 }
 
 /* ---------- Escritorio ---------- */
