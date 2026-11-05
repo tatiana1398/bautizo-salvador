@@ -297,11 +297,12 @@ const deliver = (bird, block, { faceRight, scale, then }) => {
   wakeDove();
 };
 
-// Después de confirmar, en una fila debajo de "Gracias por acompañarnos":
-// los padrinos afuera y los papás adentro, todos mirando hacia el centro.
+// Después de confirmar, en una fila debajo de Salvador (que está debajo de "Gracias por
+// acompañarnos"): los padrinos afuera y los papás adentro, todos mirando hacia el centro.
 const familySpots = () => {
   const width = dove.offsetWidth;
   const thanksLine = document.querySelector(".pie-gracias").getBoundingClientRect();
+  const salvadorSpot = document.getElementById("paloma-pie").getBoundingClientRect();
   const parentWidth = width * FAMILY_SIZE.parents;
   const godWidth = width * FAMILY_SIZE.godparents;
   const gap = 12;
@@ -313,7 +314,7 @@ const familySpots = () => {
   const parentScale = FAMILY_SIZE.parents * fit;
   const godScale = FAMILY_SIZE.godparents * fit;
   const center = thanksLine.left + thanksLine.width / 2;
-  const y = thanksLine.bottom + 16 * fit;
+  const y = salvadorSpot.bottom + 10 * fit;
   // Los padrinos un poco más arriba que los papás, como en un arco.
   const godY = y - godWidth * fit * 0.75 * 0.25;
   const parentLeft = center - middle * fit / 2 - parentWidth * fit;
@@ -345,11 +346,11 @@ const groupSpot = (section, index) => (section === "pie" && confirmed ? familySp
 
 const onScreen = (bird) => bird.y > -dove.offsetWidth && bird.y < window.innerHeight;
 
-// Después de enviar, las cuatro llegan una por una desde los lados y se posan
-// debajo de "Gracias por acompañarnos".
+// Después de enviar, primero se ve a Salvador en su lugar; luego las cuatro llegan
+// una por una desde los lados y se posan debajo de él.
 const gatherAtFooter = (bird, index) => {
   familyGathered = true;
-  const wait = 300 + index * 280;
+  const wait = 1300 + index * 380;
   window.setTimeout(() => {
     if (salvador.stop?.section !== "pie" || bird.delivering) return;
     const start =
