@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link href="/favicon.ico" rel="icon shortcut">
+  <link href="favicon.ico" rel="icon shortcut">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,11 +20,379 @@
   <meta property="og:description"
     content="Ceremonia en la Parroquia San Ambrosio y brunch en LUMINA. Sábado 5 de diciembre de 2026, Bogotá." />
   <meta property="og:type" content="website" />
+
+  <script>
+    // Con JavaScript se muestran el sobre y las animaciones de entrada.
+    // Si el link apunta a una sección (#rsvp, por ejemplo), se salta el sobre.
+    document.documentElement.classList.add("js");
+    if (window.location.hash.length > 1) document.documentElement.classList.add("sin-sobre");
+    // Al volver a abrir la invitación, empieza desde arriba y no donde se había quedado.
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
+  <div class="pagina">
+    <!-- Pantalla de entrada: un sobre cerrado con sello de lacre -->
+    <div id="sobre" class="sobre">
+      <div class="sobre-fondo" aria-hidden="true"></div>
+
+      <p class="eyebrow sobre-titulo">Tienes una invitación</p>
+
+      <button type="button" id="abrir-sobre" class="sobre-boton" aria-label="Abrir la invitación">
+        <!-- Interior del sobre -->
+        <div class="sobre-interior"></div>
+
+        <!-- Bolsillo delantero del sobre -->
+        <div class="sobre-bolsillo">
+          <div class="sobre-bolsillo-papel"></div>
+          <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" stroke="currentColor"
+            stroke-width="0.35" vector-effect="non-scaling-stroke">
+            <path d="M0 0 L50 56 L100 0" vector-effect="non-scaling-stroke" />
+            <path d="M0 100 L41 58" vector-effect="non-scaling-stroke" />
+            <path d="M100 100 L59 58" vector-effect="non-scaling-stroke" />
+          </svg>
+          <div class="sobre-bolsillo-borde"></div>
+        </div>
+
+        <!-- Solapa -->
+        <div class="sobre-solapa">
+          <div class="sobre-solapa-papel"></div>
+          <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" stroke="currentColor">
+            <path d="M0 0 L50 100 L100 0" vector-effect="non-scaling-stroke" stroke-width="1" />
+          </svg>
+        </div>
+
+        <!-- Sello de lacre -->
+        <span class="sobre-sello">
+          <span class="sobre-sello-letras">
+            <span class="chica">L</span>
+            <span class="grande">S</span>
+            <span class="chica">M</span>
+          </span>
+        </span>
+      </button>
+
+      <p class="sobre-pista"><span>Toca el sobre para abrir</span></p>
+    </div>
+
+    <!-- La paloma que acompaña la lectura: sale del sobre con el monograma en el pico, se posa en la
+         portada y luego vuela a un lado de cada sección hasta dejarlo en el pie -->
+    <div id="paloma" class="paloma" aria-hidden="true">
+      <div class="monograma paloma-carga">
+        <span class="monograma-letras">
+          <span class="chica">L</span>
+          <span class="grande">S</span>
+          <span class="chica">M</span>
+        </span>
+      </div>
+      <div class="paloma-ave">
+        <img src="images/paloma-cuerpo.png" alt="" width="360" height="270" />
+        <img class="paloma-alas" src="images/paloma-alas.png" alt="" width="360" height="270" />
+      </div>
+    </div>
+
+    <!-- Música de fondo: Hallelujah (instrumental, piano, violín y chelo) -->
+    <audio id="musica" src="audio/hallelujah.mp3" loop preload="auto"></audio>
+    <button type="button" id="boton-musica" class="boton-musica" aria-label="Poner música" aria-pressed="false" hidden>
+      <svg class="icono-musica" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 18V5l12-2v13" />
+        <circle cx="6" cy="18" r="3" />
+        <circle cx="18" cy="16" r="3" />
+      </svg>
+      <svg class="icono-pausa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="14" y="3" width="5" height="18" rx="1" />
+        <rect x="5" y="3" width="5" height="18" rx="1" />
+      </svg>
+      <span class="boton-musica-pulso" aria-hidden="true"></span>
+    </button>
+
+    <main>
+      <!-- Portada -->
+      <section id="inicio" class="portada">
+        <div class="portada-marco" aria-hidden="true"></div>
+        <svg class="ramita ramita-izquierda" viewBox="0 0 140 320" fill="none" aria-hidden="true" stroke="currentColor"
+          stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M70 6C63 80 76 168 60 314" />
+          <path d="M69 58c-20-10-38 0-40 18 20 8 36-1 40-18Z" />
+          <path d="M71 96c20-11 39-2 41 16-20 8-37 0-41-16Z" />
+          <path d="M69 138c-18-9-35 0-37 17 19 7 34-1 37-17Z" />
+          <path d="M70 178c19-10 37-1 39 16-19 8-35 0-39-16Z" />
+          <path d="M67 220c-17-8-33 0-35 16 18 7 32-1 35-16Z" />
+          <path d="M68 258c17-9 33-1 35 14-17 7-32 0-35-14Z" />
+          <path d="M64 296c-10-5-19 0-20 9 11 4 19-1 20-9Z" />
+          <circle cx="70" cy="26" r="2.2" />
+          <circle cx="72" cy="212" r="1.8" />
+          <circle cx="62" cy="306" r="1.6" />
+        </svg>
+        <svg class="ramita ramita-derecha" viewBox="0 0 140 320" fill="none" aria-hidden="true" stroke="currentColor"
+          stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M70 6C63 80 76 168 60 314" />
+          <path d="M69 58c-20-10-38 0-40 18 20 8 36-1 40-18Z" />
+          <path d="M71 96c20-11 39-2 41 16-20 8-37 0-41-16Z" />
+          <path d="M69 138c-18-9-35 0-37 17 19 7 34-1 37-17Z" />
+          <path d="M70 178c19-10 37-1 39 16-19 8-35 0-39-16Z" />
+          <path d="M67 220c-17-8-33 0-35 16 18 7 32-1 35-16Z" />
+          <path d="M68 258c17-9 33-1 35 14-17 7-32 0-35-14Z" />
+          <path d="M64 296c-10-5-19 0-20 9 11 4 19-1 20-9Z" />
+          <circle cx="70" cy="26" r="2.2" />
+          <circle cx="72" cy="212" r="1.8" />
+          <circle cx="62" cy="306" r="1.6" />
+        </svg>
+
+        <div class="portada-contenido">
+          <!-- Monograma con la paloma a la derecha, empujándolo con la rama de olivo -->
+          <div class="portada-item" style="--orden: 0">
+            <div class="monograma-paloma">
+              <div class="monograma monograma-ancla" role="img" aria-label="Monograma LSM">
+                <span class="monograma-letras" aria-hidden="true">
+                  <span class="chica">L</span>
+                  <span class="grande">S</span>
+                  <span class="chica">M</span>
+                </span>
+              </div>
+              <img id="paloma-portada" class="paloma-ancla" src="images/paloma-sello.png" alt="" aria-hidden="true"
+                width="360" height="270" />
+            </div>
+          </div>
+
+          <p class="portada-item eyebrow portada-etiqueta" style="--orden: 1">Bautizo</p>
+
+          <img class="portada-item portada-nombre" style="--orden: 2" src="images/salvador-nombre-sin-paloma.png"
+            alt="Salvador" width="922" height="315" loading="eager" />
+
+          <div class="portada-item portada-adorno" style="--orden: 3">
+            <span class="linea"></span>
+            <span class="rombo"></span>
+            <span class="linea"></span>
+          </div>
+
+          <p class="portada-item portada-fecha" style="--orden: 4">Sábado, 5 de diciembre de 2026</p>
+        </div>
+
+        <div class="portada-desliza">
+          <span class="portada-desliza-texto">Desliza</span>
+          <span class="portada-desliza-linea" aria-hidden="true"></span>
+        </div>
+      </section>
+
+      <!-- Padres y padrinos -->
+      <section id="familia" class="familia">
+        <div class="contenedor-560">
+          <div class="aparecer centrado">
+            <p class="eyebrow">Padres</p>
+            <div class="familia-nombres">
+              <p>Tatiana Montenegro Domínguez</p>
+              <p>Fernando Leiva Benachi</p>
+            </div>
+          </div>
+          <div class="rule-fade familia-separador"></div>
+          <div class="aparecer centrado" style="--retraso: 0.08s">
+            <p class="eyebrow">Padrinos</p>
+            <div class="familia-nombres">
+              <p>Violet Leiva Benachi</p>
+              <p>Nicolás Montenegro Domínguez</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bienvenida -->
+      <section id="invitacion" class="bienvenida">
+        <div class="contenedor-600 centrado">
+          <div class="aparecer">
+            <p class="eyebrow">Con alegría</p>
+          </div>
+          <div class="aparecer" style="--retraso: 0.08s">
+            <p class="bienvenida-titulo">Tenemos el gusto de invitarte a celebrar el bautizo de Salvador.</p>
+          </div>
+          <div class="aparecer" style="--retraso: 0.16s">
+            <p class="bienvenida-nota">Nuestro hijo recibe la bendición de Dios y comienza su camino en la fe, rodeado del
+              amor de su familia.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ceremonia y brunch -->
+      <section id="detalles" class="detalles">
+        <div class="contenedor-680">
+          <div class="detalles-grilla">
+            <div class="aparecer alto-completo">
+              <article class="lugar">
+                <div class="lugar-encabezado">
+                  <p class="eyebrow">Ceremonia</p>
+                  <span class="lugar-hora">8:00 a.m.</span>
+                </div>
+                <h3 class="lugar-nombre">Parroquia San Ambrosio</h3>
+                <p class="lugar-direccion">
+                  Carrera 50 # 123A-30, El Batán
+                  <br />
+                  Bogotá, Colombia
+                </p>
+                <div class="lugar-pie">
+                  <div class="rule"></div>
+                  <a class="eyebrow lugar-mapa" target="_blank" rel="noreferrer"
+                    href="https://www.google.com/maps/search/?api=1&amp;query=Parroquia%20San%20Ambrosio%2C%20Carrera%2050%20%23%20123A-30%2C%20Bogot%C3%A1&amp;query_place_id=ChIJkx8oasuaP44RucnoHB6NWSk">
+                    Cómo llegar
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M7 7h10v10" />
+                      <path d="M7 17 17 7" />
+                    </svg>
+                  </a>
+                </div>
+              </article>
+            </div>
+
+            <div class="aparecer alto-completo" style="--retraso: 0.1s">
+              <article class="lugar">
+                <div class="lugar-encabezado">
+                  <p class="eyebrow">Brunch</p>
+                  <span class="lugar-hora">9:30 a.m.</span>
+                </div>
+                <h3 class="lugar-nombre">Lumina Rooftop</h3>
+                <p class="lugar-direccion">
+                  Calle 114 # 6A-92, Usaquén (terraza)
+                  <br />
+                  Bogotá, Colombia
+                </p>
+                <div class="lugar-pie">
+                  <div class="rule"></div>
+                  <a class="eyebrow lugar-mapa" target="_blank" rel="noreferrer"
+                    href="https://maps.google.com/?cid=18186513256719743322">
+                    Cómo llegar
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M7 7h10v10" />
+                      <path d="M7 17 17 7" />
+                    </svg>
+                  </a>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Código de vestimenta -->
+      <section id="vestimenta" class="vestimenta">
+        <div class="aparecer contenedor-560 centrado">
+          <p class="eyebrow">Código de vestimenta</p>
+          <p class="vestimenta-valor">Semiformal</p>
+          <!-- Para agregar una nota: <p class="vestimenta-nota">…</p> -->
+        </div>
+      </section>
+
+      <!-- Confirmación de asistencia -->
+      <section id="rsvp" class="rsvp">
+        <div class="aparecer contenedor-560">
+          <div class="rsvp-tarjeta">
+            <p class="eyebrow">Confirmación</p>
+            <h2 class="rsvp-titulo">¿Nos acompañas?</h2>
+            <p class="rsvp-mensaje">Tu presencia es el mejor regalo. Confirma tu asistencia antes del 28 de noviembre de
+              2026.</p>
+
+            <div id="rsvp-gracias" class="rsvp-gracias" role="status" hidden>
+              <p class="rsvp-gracias-titulo"></p>
+              <p class="rsvp-gracias-texto"></p>
+            </div>
+
+            <form id="rsvp-formulario" class="rsvp-formulario" novalidate>
+              <div>
+                <label for="rsvp-name" class="eyebrow-muted">Familia (apellidos)</label>
+                <div class="rsvp-familia">
+                  <span>Familia</span>
+                  <input id="rsvp-name" type="text" placeholder="Ej. Leiva Montenegro" autocomplete="family-name"
+                    class="field" />
+                </div>
+              </div>
+
+              <div>
+                <span class="eyebrow-muted">¿Podrás acompañarnos?</span>
+                <div class="rsvp-opciones">
+                  <button type="button" class="rsvp-opcion" data-asiste="yes" aria-pressed="false">Sí, asistiremos</button>
+                  <button type="button" class="rsvp-opcion" data-asiste="no" aria-pressed="false">No podremos</button>
+                </div>
+              </div>
+
+              <p id="rsvp-no" class="rsvp-no" hidden>
+                Los vamos a extrañar. Gracias por acompañarnos con el corazón y por tener a Salvador presente en sus
+                oraciones.
+              </p>
+
+              <div id="rsvp-cantidad" hidden>
+                <span class="eyebrow-muted">Número de personas</span>
+                <div class="rsvp-contador">
+                  <button type="button" id="rsvp-menos" class="rsvp-paso" aria-label="Una persona menos">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14" />
+                    </svg>
+                  </button>
+                  <span id="rsvp-numero" class="rsvp-numero" aria-live="polite">1</span>
+                  <button type="button" id="rsvp-mas" class="rsvp-paso" aria-label="Una persona más">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14" />
+                      <path d="M12 5v14" />
+                    </svg>
+                  </button>
+                  <span id="rsvp-personas" class="rsvp-personas">persona</span>
+                </div>
+              </div>
+
+              <div id="rsvp-asistentes" hidden>
+                <span class="eyebrow-muted">¿Quiénes asisten?</span>
+                <p class="rsvp-ayuda">Escribe el nombre de cada integrante de la familia que asistirá, incluyéndote.</p>
+                <div id="rsvp-nombres" class="rsvp-nombres"></div>
+              </div>
+
+              <div class="rsvp-enviar">
+                <button type="submit" id="rsvp-boton" class="boton" disabled>
+                  <svg class="icono-enviar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path
+                      d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+                    <path d="m21.854 2.147-10.94 10.939" />
+                  </svg>
+                  <svg class="icono-cargando" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                  </svg>
+                  <span class="boton-texto">Enviar</span>
+                </button>
+                <p id="rsvp-error" class="rsvp-error" role="alert" hidden>
+                  No pudimos enviar tu confirmación. Inténtalo de nuevo en un momento.
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="pie" class="pie">
+      <div class="pie-contenido">
+        <div class="monograma-paloma">
+          <div class="monograma monograma-ancla" role="img" aria-label="Monograma LSM">
+            <span class="monograma-letras" aria-hidden="true">
+              <span class="chica">L</span>
+              <span class="grande">S</span>
+              <span class="chica">M</span>
+            </span>
+          </div>
+          <img id="paloma-pie" class="paloma-ancla" src="images/paloma-sello.png" alt="" aria-hidden="true" width="360"
+            height="270" loading="lazy" />
+        </div>
+        <p class="pie-gracias">Gracias por acompañarnos</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
 </body>
 
 </html>

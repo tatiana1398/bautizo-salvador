@@ -2,23 +2,25 @@
 
 Página: https://tatiana1398.github.io/bautizo-salvador/
 
+Es una página hecha solo con HTML, CSS y JavaScript: no hay que instalar ni compilar nada.
+
 ## Editar la invitación
 
-Casi todo el contenido (nombres, fecha, lugares, horarios, vestimenta, música y la URL de
-las confirmaciones) está en `src/content/invitation.ts`.
-
-- Imágenes: `public/images/`
-- Música: `public/audio/hallelujah.mp3`
+- Textos (nombres, fecha, lugares, horarios, vestimenta): `index.html`
+- Estilos y colores: `css/styles.css`
+- Sobre de entrada, música y formulario de confirmación: `js/main.js`
+  (la URL de las confirmaciones está al inicio de ese archivo)
+- Imágenes: `images/`
+- Música: `audio/hallelujah.mp3`
 - Confirmaciones: llegan a una hoja de Google mediante el script `google-sheets/Confirmaciones.gs`
 
-## Correr en el computador
+## Ver en el computador
 
 ```sh
-npm install
-npm run dev
+python3 -m http.server 8080
 ```
 
-Se abre en http://localhost:8080/
+Se abre en http://localhost:8080/ (también funciona abriendo `index.html` directamente en el navegador).
 
 ## Publicar
 

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Bautizo de Salvador</title>
+  <script>
+    // Cualquier ruta desconocida lleva a la invitación (conservando #seccion si viene en el link).
+    // En GitHub Pages la página vive en /<repositorio>/; en otro servidor, en la raíz.
+    var base = location.hostname.endsWith("github.io") ? "/" + location.pathname.split("/")[1] + "/" : "/";
+    location.replace(base + location.hash);
+  </script>
+</head>
+
+<body></body>
+
+</html>

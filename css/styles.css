@@ -1,0 +1,1495 @@
+/* =========================================================
+   Invitación al bautizo de Salvador
+   Paleta: Navy #2F4156 · Teal #567C8D · Sky Blue #C8D9E6 · Beige #F5EFEB · White
+   ========================================================= */
+
+:root {
+  --background: 24 33% 94%;
+  --foreground: 212 29% 26%;
+  --card: 0 0% 100%;
+  --primary: 212 29% 26%;
+  --primary-foreground: 24 33% 96%;
+  --destructive: 0 45% 45%;
+  --border: 206 32% 85%;
+  --ring: 199 24% 45%;
+
+  --ink: 212 29% 26%;
+  --ink-soft: 199 24% 38%;
+  --line: 206 32% 85%;
+  --paper: 24 33% 94%;
+  --paper-deep: 24 24% 90%;
+  --moss: 199 24% 40%;
+  --moss-deep: 212 29% 26%;
+  --sage: 199 24% 52%;
+  --clay: 206 38% 70%;
+  --navy: 212 29% 26%;
+  --sky: 206 38% 84%;
+
+  --gradient-wash: radial-gradient(
+    ellipse at 50% -10%,
+    hsl(var(--sky) / 0.55),
+    hsl(var(--paper) / 0) 62%
+  );
+  --shadow-lift: 0 18px 40px -34px hsl(var(--ink) / 0.5);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid hsl(var(--border));
+}
+
+html {
+  line-height: 1.5;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans);
+  font-feature-settings: "kern" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h2,
+h3 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+img,
+svg {
+  display: block;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+::selection {
+  background: hsl(var(--moss) / 0.16);
+  color: hsl(var(--ink));
+}
+
+:focus-visible {
+  outline: 2px solid hsl(var(--moss));
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---------- Piezas comunes ---------- */
+
+.pagina {
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: hsl(var(--background));
+}
+
+.centrado {
+  text-align: center;
+}
+
+.contenedor-560,
+.contenedor-600,
+.contenedor-680 {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.contenedor-560 {
+  max-width: 560px;
+}
+
+.contenedor-600 {
+  max-width: 600px;
+}
+
+.contenedor-680 {
+  max-width: 680px;
+}
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0.28em;
+  color: hsl(var(--moss));
+}
+
+.eyebrow-muted {
+  font-size: 10px;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  color: hsl(var(--ink-soft));
+}
+
+.rule {
+  height: 1px;
+  width: 100%;
+  background: hsl(var(--line));
+}
+
+.rule-fade {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--line) / 0) 0%,
+    hsl(var(--line)) 50%,
+    hsl(var(--line) / 0) 100%
+  );
+}
+
+.field {
+  width: 100%;
+  border-radius: 0;
+  border-bottom-width: 1px;
+  border-color: hsl(var(--line));
+  background: transparent;
+  padding: 4px 0 10px;
+  font-size: 14px;
+  color: hsl(var(--ink));
+  appearance: none;
+  transition: border-color 0.3s var(--ease);
+}
+
+.field:focus,
+.field:focus-visible {
+  outline: none;
+}
+
+.field::placeholder {
+  color: hsl(var(--ink-soft) / 0.55);
+}
+
+.field:focus {
+  border-color: hsl(var(--moss));
+}
+
+/* Monograma LSM */
+.monograma {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border: 1px solid hsl(var(--line) / 0.9);
+  border-radius: 9999px;
+}
+
+.monograma-letras {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 1;
+  color: hsl(var(--navy));
+}
+
+.monograma-letras .chica {
+  font-size: 15px;
+}
+
+.monograma-letras .grande {
+  font-size: 32px;
+}
+
+/* Monograma con la paloma a la derecha */
+.monograma-paloma {
+  position: relative;
+  display: inline-flex;
+}
+
+.monograma-paloma img {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  margin-left: -3px;
+  width: 104px;
+  max-width: none;
+  transform: translateY(-41%);
+  pointer-events: none;
+}
+
+/* Botón principal */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 52px;
+  padding: 0 32px;
+  white-space: nowrap;
+  border: 1px solid hsl(var(--primary));
+  border-radius: 0;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.boton:hover {
+  border-color: hsl(var(--moss-deep));
+  background-color: hsl(var(--moss-deep));
+}
+
+.boton:active {
+  transform: scale(0.99);
+}
+
+.boton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+}
+
+.boton:disabled {
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.boton svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.boton .icono-cargando,
+.boton.enviando .icono-enviar {
+  display: none;
+}
+
+.boton.enviando .icono-cargando {
+  display: block;
+  animation: girar 1s linear infinite;
+}
+
+/* ---------- Animaciones de aparición ---------- */
+
+/* Aparecen al entrar en pantalla (ver js/main.js) */
+.js .aparecer {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.8s var(--ease) var(--retraso, 0s),
+    transform 0.8s var(--ease) var(--retraso, 0s);
+}
+
+.js .aparecer.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.alto-completo {
+  height: 100%;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulso {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes parpadeo {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes desliza {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 0.85;
+  }
+}
+
+@keyframes mecer {
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+}
+
+/* ---------- Sobre de entrada ---------- */
+
+.sobre {
+  display: none;
+}
+
+.js .sobre {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 24px;
+}
+
+.js.sin-sobre .sobre {
+  display: none;
+}
+
+.sobre-fondo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: hsl(var(--paper-deep));
+  background-image: var(--gradient-wash);
+  transition: opacity 0.8s var(--ease) 1s;
+}
+
+.sobre-titulo {
+  position: relative;
+  margin-bottom: 40px;
+  text-align: center;
+  transition:
+    opacity 0.4s var(--ease),
+    transform 0.4s var(--ease);
+}
+
+.sobre-boton {
+  position: relative;
+  width: min(86vw, 440px, calc((100svh - 11rem) * 1.5));
+  aspect-ratio: 3 / 2;
+  perspective: 1400px;
+  transition:
+    opacity 0.7s var(--ease) 0.85s,
+    transform 0.7s var(--ease) 0.85s;
+}
+
+.sobre-boton:focus {
+  outline: none;
+}
+
+.sobre-interior {
+  position: absolute;
+  inset: 0;
+  border: 1px solid hsl(var(--line));
+  background-color: hsl(var(--sky));
+  box-shadow: 0 24px 60px -28px hsl(212 29% 26% / 0.45);
+}
+
+.sobre-interior,
+.sobre-bolsillo {
+  transition: opacity 0.4s var(--ease) 0.85s;
+}
+
+.sobre-bolsillo {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
+.sobre-bolsillo-papel {
+  position: absolute;
+  inset: 0;
+  background-color: hsl(24 33% 97%);
+  clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+}
+
+.sobre-bolsillo svg,
+.sobre-solapa svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: hsl(var(--line));
+}
+
+.sobre-bolsillo-borde {
+  position: absolute;
+  inset: 0;
+  border: 1px solid hsl(var(--line));
+  pointer-events: none;
+}
+
+.sobre-solapa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  height: 60%;
+  transform-origin: top;
+  transform-style: preserve-3d;
+  transition:
+    transform 0.75s var(--ease) 0.25s,
+    opacity 0.4s var(--ease) 0.85s;
+}
+
+/* La solapa abierta debe quedar detrás de la tarjeta que sale del sobre */
+.sobre-solapa.detras {
+  z-index: 5;
+}
+
+.sobre-solapa-papel {
+  position: absolute;
+  inset: 0;
+  background-color: #fff;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.sobre-sello {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 9999px;
+  background-color: hsl(var(--navy));
+  box-shadow:
+    inset 0 0 0 3px hsl(212 29% 32%),
+    inset 0 0 0 5px hsl(199 24% 45% / 0.7),
+    0 6px 14px -6px hsl(212 29% 15% / 0.6);
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.35s var(--ease),
+    transform 0.35s var(--ease);
+}
+
+.sobre .sobre-sello:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.sobre-sello-letras {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 1;
+  color: hsl(var(--sky));
+}
+
+.sobre-sello-letras .chica {
+  font-size: 11px;
+}
+
+.sobre-sello-letras .grande {
+  font-size: 24px;
+}
+
+.sobre-pista {
+  position: relative;
+  margin-top: 40px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: hsl(var(--ink-soft));
+  transition: opacity 0.3s var(--ease);
+}
+
+.sobre-pista span {
+  display: block;
+  animation: parpadeo 2.4s ease-in-out infinite;
+}
+
+/* Al tocar el sobre: se levanta la solapa y todo se desvanece */
+.sobre.abriendo .sobre-boton {
+  cursor: default;
+  opacity: 0;
+  transform: scale(1.06);
+}
+
+.sobre.abriendo .sobre-fondo,
+.sobre.abriendo .sobre-interior,
+.sobre.abriendo .sobre-bolsillo,
+.sobre.abriendo .sobre-pista {
+  opacity: 0;
+}
+
+.sobre.abriendo .sobre-titulo {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.sobre.abriendo .sobre-solapa {
+  opacity: 0;
+  transform: rotateX(180deg);
+}
+
+.sobre.abriendo .sobre-sello {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.7);
+}
+
+.sobre.abriendo .sobre-sello:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .aparecer,
+  .js .portada-item {
+    transform: none;
+  }
+
+  .sobre.abriendo *,
+  .sobre.abriendo .sobre-boton {
+    transition-delay: 0s !important;
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* ---------- Paloma que acompaña la lectura ---------- */
+
+/* Solo se usa con JavaScript (ver js/main.js); sin él se ven las palomas fijas de la portada y el pie */
+.paloma {
+  display: none;
+}
+
+.paloma-activa .paloma {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 55;
+  display: block;
+  width: 104px;
+  pointer-events: none;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* La familia que llega al final queda detrás de la paloma de Salvador */
+.paloma-activa .paloma-familia {
+  z-index: 54;
+}
+
+.paloma-activa .paloma-ancla,
+.paloma-activa .monograma-ancla {
+  visibility: hidden;
+}
+
+.paloma-ave {
+  position: relative;
+  transition: transform 0.35s var(--ease);
+}
+
+.paloma.mirando-derecha .paloma-ave {
+  transform: scaleX(-1);
+}
+
+.paloma-ave img {
+  width: 100%;
+  max-width: none;
+}
+
+.paloma-alas {
+  position: absolute;
+  inset: 0;
+  /* Hombro de la paloma: desde ahí giran las alas */
+  transform-origin: 31% 49%;
+  transition: transform 0.35s ease-out;
+}
+
+/* Aletazo: baja rápido y sube más despacio */
+.paloma.aleteando .paloma-alas {
+  animation: aleteo 0.32s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Planeando: alas abiertas y quietas */
+.paloma.planeando .paloma-alas {
+  transform: rotate(9deg) scaleY(0.72);
+}
+
+/* Posada: de vez en cuando se acomoda las alas */
+.paloma.posada .paloma-alas {
+  animation: acomodo 7s ease-in-out 1.5s infinite;
+}
+
+@keyframes aleteo {
+  0%,
+  100% {
+    transform: none;
+  }
+  40% {
+    transform: rotate(20deg) scaleY(0.28);
+  }
+}
+
+@keyframes acomodo {
+  0%,
+  88%,
+  100% {
+    transform: none;
+  }
+  91% {
+    transform: rotate(5deg) scaleY(0.85);
+  }
+  94% {
+    transform: none;
+  }
+  96% {
+    transform: rotate(3deg) scaleY(0.9);
+  }
+}
+
+/* El monograma que lleva en el pico, en la misma posición que en la portada.
+   Cuando mira a la derecha, pasa al otro lado (sin voltear las letras). */
+.paloma-carga {
+  --ancho-paloma: 104px;
+  position: absolute;
+  top: 41%;
+  right: calc(100% - 3px);
+  transform: translateY(-50%);
+  transition: transform 0.35s var(--ease);
+}
+
+.paloma.mirando-derecha .paloma-carga {
+  transform: translate(calc(100% + var(--ancho-paloma) - 6px), -50%);
+}
+
+/* ---------- Botón de música ---------- */
+
+.boton-musica {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid hsl(var(--line));
+  border-radius: 9999px;
+  background-color: hsl(var(--card));
+  color: hsl(var(--navy));
+  box-shadow: var(--shadow-lift);
+  transition:
+    color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.boton-musica:hover {
+  background-color: hsl(var(--sky));
+}
+
+.icono-musica {
+  width: 20px;
+  height: 20px;
+}
+
+.icono-pausa {
+  width: 16px;
+  height: 16px;
+}
+
+.boton-musica .icono-pausa,
+.boton-musica .boton-musica-pulso,
+.boton-musica.sonando .icono-musica {
+  display: none;
+}
+
+.boton-musica.sonando .icono-pausa,
+.boton-musica.sonando .boton-musica-pulso {
+  display: block;
+}
+
+.boton-musica-pulso {
+  position: absolute;
+  inset: 0;
+  border: 1px solid hsl(var(--navy) / 0.3);
+  border-radius: 9999px;
+  animation: pulso 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ---------- Portada ---------- */
+
+.portada {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  overflow: hidden;
+  background-image: var(--gradient-wash);
+}
+
+.portada-marco {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid hsl(var(--line) / 0.8);
+  pointer-events: none;
+}
+
+.ramita {
+  position: absolute;
+  width: 96px;
+  height: 224px;
+  color: hsl(var(--sage));
+  pointer-events: none;
+  animation: mecer 14s ease-in-out infinite;
+}
+
+.ramita-izquierda {
+  left: -32px;
+  top: 40px;
+}
+
+.ramita-derecha {
+  right: -32px;
+  bottom: 48px;
+  color: hsl(var(--sage) / 0.9);
+}
+
+.portada-contenido {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+/* Entrada escalonada al abrir el sobre */
+.js .portada-item {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.js .portada.mostrar .portada-item {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.95s var(--ease),
+    transform 0.95s var(--ease);
+  transition-delay: calc(0.1s + var(--orden) * 0.1s);
+}
+
+.portada-etiqueta {
+  margin-top: 32px;
+  padding-left: 0.36em;
+  font-size: 15px;
+  letter-spacing: 0.36em;
+}
+
+.portada-nombre {
+  margin-top: 12px;
+  width: min(72vw, 380px);
+}
+
+.portada-adorno {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.portada-adorno .linea {
+  width: 40px;
+  height: 1px;
+  background-color: hsl(var(--line));
+}
+
+.portada-adorno .rombo {
+  width: 4px;
+  height: 4px;
+  background-color: hsl(var(--clay));
+  transform: rotate(45deg);
+}
+
+.portada-fecha {
+  margin-top: 24px;
+  font-size: 11px;
+  line-height: 1.625;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  color: hsl(var(--ink-soft));
+}
+
+.portada-desliza {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 36px;
+}
+
+.portada-desliza-texto {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: hsl(var(--ink-soft) / 0.7);
+}
+
+.portada-desliza-linea {
+  width: 1px;
+  height: 40px;
+  background-color: hsl(var(--line));
+  animation: desliza 2.6s ease-in-out infinite;
+}
+
+/* ---------- Padres y padrinos ---------- */
+
+.familia {
+  padding: 64px 24px 0;
+}
+
+.familia-nombres {
+  margin-top: 20px;
+}
+
+.familia-nombres p {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 300;
+  line-height: 1.375;
+  color: hsl(var(--ink));
+  text-wrap: balance;
+}
+
+.familia-nombres p + p {
+  margin-top: 6px;
+}
+
+.familia-separador {
+  margin: 36px 0;
+}
+
+/* ---------- Bienvenida ---------- */
+
+.bienvenida {
+  padding: 56px 24px 24px;
+}
+
+.bienvenida-titulo {
+  margin-top: 28px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: hsl(var(--ink));
+  text-wrap: balance;
+}
+
+.bienvenida-nota {
+  max-width: 400px;
+  margin: 20px auto 0;
+  font-size: 13px;
+  line-height: 1.625;
+  color: hsl(var(--ink-soft));
+  text-wrap: pretty;
+}
+
+/* ---------- Ceremonia y brunch ---------- */
+
+.detalles {
+  padding: 64px 24px;
+}
+
+.detalles-grilla {
+  display: grid;
+  gap: 16px;
+}
+
+.lugar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 28px;
+  border: 1px solid hsl(var(--line));
+  background-color: hsl(var(--card) / 0.5);
+  transition: border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lugar:hover {
+  border-color: hsl(var(--moss) / 0.45);
+}
+
+.lugar-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lugar-hora {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1;
+  color: hsl(var(--ink-soft));
+}
+
+.lugar-nombre {
+  margin-top: 28px;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: hsl(var(--ink));
+  text-wrap: balance;
+}
+
+.lugar-direccion {
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.625;
+  color: hsl(var(--ink-soft));
+}
+
+.lugar-pie {
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.lugar-mapa {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lugar-mapa:hover {
+  color: hsl(var(--moss-deep));
+}
+
+.lugar-mapa svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---------- Código de vestimenta ---------- */
+
+.vestimenta {
+  padding: 64px 24px;
+  border-top: 1px solid hsl(var(--line));
+}
+
+.vestimenta-valor {
+  margin-top: 20px;
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 300;
+  line-height: 1.25;
+  color: hsl(var(--ink));
+}
+
+.vestimenta-nota {
+  max-width: 340px;
+  margin: 12px auto 0;
+  font-size: 13px;
+  line-height: 1.625;
+  color: hsl(var(--ink-soft));
+  text-wrap: pretty;
+}
+
+/* ---------- Confirmación ---------- */
+
+.rsvp {
+  padding: 16px 24px 96px;
+}
+
+.rsvp-tarjeta {
+  padding: 48px 24px;
+  border: 1px solid hsl(var(--line));
+  background-color: hsl(var(--card) / 0.7);
+  text-align: center;
+}
+
+.rsvp-titulo {
+  margin-top: 16px;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 1.25;
+  color: hsl(var(--ink));
+}
+
+.rsvp-mensaje {
+  max-width: 380px;
+  margin: 16px auto 0;
+  font-size: 13px;
+  line-height: 1.625;
+  color: hsl(var(--ink-soft));
+  text-wrap: pretty;
+}
+
+.rsvp-gracias {
+  margin-top: 36px;
+}
+
+.rsvp-gracias-titulo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.375;
+  color: hsl(var(--ink));
+}
+
+.rsvp-gracias-texto {
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.625;
+  color: hsl(var(--ink-soft));
+}
+
+.rsvp-formulario {
+  margin-top: 36px;
+  text-align: left;
+}
+
+.rsvp-formulario > * + * {
+  margin-top: 28px;
+}
+
+.rsvp-familia {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.rsvp-familia span {
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: hsl(var(--ink));
+}
+
+.rsvp-opciones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.rsvp-opcion {
+  padding: 14px 16px;
+  border: 1px solid hsl(var(--line));
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: hsl(var(--ink-soft));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rsvp-opcion:hover {
+  border-color: hsl(var(--moss) / 0.5);
+  color: hsl(var(--moss));
+}
+
+.rsvp-opcion[aria-pressed="true"] {
+  border-color: hsl(var(--moss));
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.rsvp-no {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.625;
+  text-align: center;
+  color: hsl(var(--ink-soft));
+  text-wrap: pretty;
+}
+
+.rsvp-contador {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 12px;
+}
+
+.rsvp-paso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid hsl(var(--line));
+  color: hsl(var(--ink-soft));
+  transition:
+    color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rsvp-paso:hover {
+  border-color: hsl(var(--moss));
+  color: hsl(var(--moss));
+}
+
+.rsvp-paso:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.rsvp-paso svg {
+  width: 16px;
+  height: 16px;
+}
+
+.rsvp-numero {
+  min-width: 2ch;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 1;
+  text-align: center;
+  color: hsl(var(--ink));
+}
+
+.rsvp-personas {
+  font-size: 12px;
+  color: hsl(var(--ink-soft));
+}
+
+.rsvp-ayuda {
+  margin-top: 8px;
+  font-size: 11.5px;
+  line-height: 1.625;
+  color: hsl(var(--ink-soft) / 0.9);
+}
+
+.rsvp-nombres {
+  margin-top: 16px;
+}
+
+.rsvp-nombres > * + * {
+  margin-top: 12px;
+}
+
+.rsvp-enviar {
+  padding-top: 8px;
+  text-align: center;
+}
+
+.rsvp-error {
+  margin-top: 12px;
+  font-size: 12px;
+  color: hsl(var(--destructive));
+}
+
+/* ---------- Pie ---------- */
+
+.pie {
+  padding: 56px 24px;
+  border-top: 1px solid hsl(var(--line));
+}
+
+.pie-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.pie-gracias {
+  margin-top: 28px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 300;
+  font-style: italic;
+  color: hsl(var(--ink-soft));
+}
+
+/* ---------- Escritorio ---------- */
+
+@media (min-width: 768px) {
+  .eyebrow,
+  .eyebrow-muted {
+    font-size: 11px;
+  }
+
+  .monograma {
+    width: 84px;
+    height: 84px;
+  }
+
+  .monograma-letras .chica {
+    font-size: 17px;
+  }
+
+  .monograma-letras .grande {
+    font-size: 35px;
+  }
+
+  .monograma-paloma img,
+  .paloma-activa .paloma {
+    width: 116px;
+  }
+
+  .paloma-carga {
+    --ancho-paloma: 116px;
+  }
+
+  .sobre-sello {
+    width: 72px;
+    height: 72px;
+  }
+
+  .portada-marco {
+    inset: 20px;
+  }
+
+  .ramita {
+    width: 128px;
+    height: 320px;
+  }
+
+  .ramita-izquierda {
+    left: 32px;
+    top: 64px;
+  }
+
+  .ramita-derecha {
+    right: 40px;
+    bottom: 80px;
+  }
+
+  .portada-contenido {
+    padding-top: 96px;
+    padding-bottom: 96px;
+  }
+
+  .portada-etiqueta {
+    font-size: 17px;
+  }
+
+  .portada-nombre {
+    width: 350px;
+  }
+
+  .portada-fecha {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .familia {
+    padding-top: 96px;
+  }
+
+  .familia-nombres p {
+    font-size: 22px;
+  }
+
+  .familia-separador {
+    margin: 44px 0;
+  }
+
+  .bienvenida {
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+
+  .bienvenida-titulo {
+    font-size: 32px;
+  }
+
+  .bienvenida-nota {
+    font-size: 14px;
+  }
+
+  .detalles {
+    padding-top: 96px;
+    padding-bottom: 96px;
+  }
+
+  .detalles-grilla {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .lugar {
+    padding: 36px;
+  }
+
+  .lugar-nombre {
+    font-size: 30px;
+  }
+
+  .vestimenta {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+
+  .vestimenta-valor {
+    font-size: 27px;
+  }
+
+  .rsvp {
+    padding-top: 24px;
+    padding-bottom: 128px;
+  }
+
+  .rsvp-tarjeta {
+    padding: 56px 48px;
+  }
+
+  .rsvp-titulo {
+    font-size: 38px;
+  }
+
+  .rsvp-gracias-titulo {
+    font-size: 26px;
+  }
+
+  .rsvp-no {
+    font-size: 20px;
+  }
+
+  .pie {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+
+  .pie-gracias {
+    font-size: 24px;
+  }
+}
+
+/* ---------- Al imprimir o exportar a PDF ---------- */
+
+/* Mostrar las secciones animadas y conservar los colores */
+@media print {
+  @page {
+    margin: 8mm;
+  }
+
+  html,
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    overflow: visible !important;
+  }
+
+  .sobre,
+  .paloma,
+  .boton-musica,
+  .rsvp-formulario,
+  .rsvp-gracias {
+    display: none !important;
+  }
+
+  .paloma-ancla,
+  .monograma-ancla {
+    visibility: visible !important;
+  }
+
+  .js .aparecer,
+  .js .portada-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  article,
+  footer,
+  #rsvp {
+    break-inside: avoid;
+  }
+
+  #rsvp {
+    padding-bottom: 1.5rem;
+  }
+
+  .rsvp-tarjeta {
+    padding-top: 2.25rem;
+    padding-bottom: 2.25rem;
+  }
+
+  #detalles {
+    padding-bottom: 3rem;
+  }
+
+  #vestimenta {
+    padding-top: 2.5rem;
+    padding-bottom: 2rem;
+  }
+
+  footer {
+    border-top: 0;
+    padding-top: 1rem;
+    padding-bottom: 0;
+  }
+}

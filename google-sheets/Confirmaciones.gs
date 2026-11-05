@@ -8,7 +8,7 @@
  *    - Ejecutar como: Yo
  *    - Quién tiene acceso: Cualquier persona
  * 4. Autoriza los permisos y copia la "URL de la aplicación web" (termina en /exec).
- * 5. Pega esa URL en src/content/invitation.ts → rsvp.sheetEndpoint.
+ * 5. Pega esa URL en js/main.js → SHEET_ENDPOINT.
  */
 
 const SHEET_NAME = "Confirmaciones";

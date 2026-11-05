@@ -22,18 +22,12 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm install --no-audit --no-fund
-      - run: npx vite build
-        env:
-          BASE_PATH: /bautizo-salvador/
-      # GitHub Pages no tiene reescrituras: cualquier ruta desconocida muestra la invitación
-      - run: cp dist/index.html dist/404.html
+      # Solo se publican los archivos de la página (no hace falta compilar nada)
+      - run: |
+          mkdir _site
+          cp -r index.html 404.html favicon.ico robots.txt css js images audio _site/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
