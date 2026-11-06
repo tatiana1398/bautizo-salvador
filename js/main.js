@@ -27,6 +27,24 @@ const playMusic = () => {
 audio.addEventListener("play", () => setPlaying(true));
 audio.addEventListener("pause", () => setPlaying(false));
 
+// Al cerrar la página, cambiar de pestaña o salir del navegador, la música se detiene.
+// Si vuelven a la invitación, continúa donde iba.
+let pausedByLeaving = false;
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    if (!audio.paused) {
+      pausedByLeaving = true;
+      audio.pause();
+    }
+  } else if (pausedByLeaving) {
+    pausedByLeaving = false;
+    audio.play().catch(() => setPlaying(false));
+  }
+});
+
+window.addEventListener("pagehide", () => audio.pause());
+
 musicButton.addEventListener("click", () => {
   if (audio.paused) playMusic();
   else audio.pause();
